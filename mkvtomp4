@@ -83,7 +83,7 @@ def __sq(one):
     return squoted
 
 def sq(*args):
-    " ".join([__sq(x) for x in args])
+    return " ".join([__sq(x) for x in args])
 
 def command(*cmd, **kwargs):
     verbose_kwargs = {}

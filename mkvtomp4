@@ -185,7 +185,7 @@ class MkvInfo(object):
         if MkvInfo.codec_re is None:
             MkvInfo.codec_re = re.compile(r'^\|  \+ Codec ID: (.*)$')
         if MkvInfo.a_codec_re is None:
-            MkvInfo.a_codec_re = re.compile(r'^(A_)?(AAC|AC3)$')
+            MkvInfo.a_codec_re = re.compile(r'^(A_)?(DTS|AAC|AC3)$')
         if MkvInfo.v_codec_re is None:
             MkvInfo.v_codec_re = re.compile(r'^(V_)?(MPEG4/ISO/AVC)$')
         if MkvInfo.fps_re is None:

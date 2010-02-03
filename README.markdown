@@ -15,7 +15,16 @@ For more usage details, see the manual.
 Dependencies
 ------------
 
-Everything is written is fully cross-platform python, except:
+Tools:
+* mkvtoolnix
+* mpeg4ip
+* ffmpeg
+
+On Linux, use your package manager to install.
+On Mac OS X, use MacPorts to install.
+On Windows, go to the tools' individual websites and find windows binaries.
+
+Everything else is written using only fully cross-platform python, except:
 
 * pipes module. This means we depend on POSIX /bin/sh for the time being.
 

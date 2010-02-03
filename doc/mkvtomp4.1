@@ -22,10 +22,14 @@
 mkvtomp4 \- convert H\&.264 mkv files to mp4 files playable on the PS3
 .SH "SYNOPSIS"
 .sp
-\fBmkvtomp4\fR [\fIOPTIONS\fR] [\-\-] \fI<mkvfile>\fR \fBmkvtomp4\fR \fB\-\-correct\-profile\-only\fR [\-\-] \fI<rawh264file>\fR
+\fBmkvtomp4\fR [\fIOPTIONS\fR] [\-\-] \fI<mkvfile>\fR
+.sp
+\fBmkvtomp4\fR \fB\-\-correct\-profile\-only\fR [\-\-] \fI<rawh264file>\fR
 .SH "DESCRIPTION"
 .sp
 Uses mpeg4ip, mkvtoolnix and ffmpeg to convert troublesome mkv files to mp4\&. The conversion does not re\-encode the video and only re\-encodes the audio if it doesn\(cqt use AAC codec (one can override this behaviour using \fB\-\-audio\-codec\fR)\&. They will be playable on the Sony PS3\&.
+.sp
+We depend on: \fBmkvtoolnix\fR, \fBmpeg4ip\fR for the conversion\&. \fBffmpeg\fR is optional but required for audio transcoding\&.
 .SH "OPTIONS"
 .PP
 \fB\-\-audio\-bitrate\fR=\fI<bitrate>\fR

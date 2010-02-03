@@ -553,8 +553,8 @@ footnotes: function () {
 </div>
 <h2 id="_synopsis">SYNOPSIS</h2>
 <div class="sectionbody">
-<div class="paragraph"><p><strong>mkvtomp4</strong> [<em>OPTIONS</em>] [--] <em>&lt;mkvfile&gt;</em>
-<strong>mkvtomp4</strong> <strong>--correct-profile-only</strong> [--] <em>&lt;rawh264file&gt;</em></p></div>
+<div class="paragraph"><p><strong>mkvtomp4</strong> [<em>OPTIONS</em>] [--] <em>&lt;mkvfile&gt;</em></p></div>
+<div class="paragraph"><p><strong>mkvtomp4</strong> <strong>--correct-profile-only</strong> [--] <em>&lt;rawh264file&gt;</em></p></div>
 </div>
 <h2 id="_description">DESCRIPTION</h2>
 <div class="sectionbody">
@@ -562,6 +562,8 @@ footnotes: function () {
 The conversion does not re-encode the video and only re-encodes the audio if
 it doesn&#8217;t use AAC codec (one can override this behaviour using
 <strong>--audio-codec</strong>). They will be playable on the Sony PS3.</p></div>
+<div class="paragraph"><p>We depend on: <strong>mkvtoolnix</strong>, <strong>mpeg4ip</strong> for the conversion. <strong>ffmpeg</strong> is optional
+but required for audio transcoding.</p></div>
 </div>
 <h2 id="_options">OPTIONS</h2>
 <div class="sectionbody">
@@ -727,7 +729,7 @@ License version 3, or at your option, any later version. (GPLv3+)</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-02-03 16:23:21 CEST
+Last updated 2010-02-03 17:26:16 CEST
 </div>
 </div>
 </body>

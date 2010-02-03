@@ -13,6 +13,7 @@ mkvtomp4 - convert H.264 mkv files to mp4 files playable on the PS3
 SYNOPSIS
 --------
 *mkvtomp4* ['OPTIONS'] [--] '<mkvfile>'
+
 *mkvtomp4* *--correct-profile-only* [--] '<rawh264file>'
 
 
@@ -22,6 +23,9 @@ Uses mpeg4ip, mkvtoolnix and ffmpeg to convert troublesome mkv files to mp4.
 The conversion does not re-encode the video and only re-encodes the audio if
 it doesn't use AAC codec (one can override this behaviour using
 *--audio-codec*). They will be playable on the Sony PS3.
+
+We depend on: *mkvtoolnix*, *mpeg4ip* for the conversion. *ffmpeg* is optional
+but required for audio transcoding.
 
 
 OPTIONS

@@ -54,7 +54,7 @@ Install
 -------
 
 Use setuptools in the usual way:
-    python setup.py install
+    sudo python setup.py install
 
 To install only for the current user:
     python setup.py install --user

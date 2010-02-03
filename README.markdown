@@ -13,6 +13,8 @@ For more usage details, see the manual.
 Dependencies
 ------------
 
+Everything is written is fully cross-platform python, except:
+
 * pipes module. This means we depend on POSIX /bin/sh for the time being.
 
 If you want to help eliminate this dependency, help solve issue 0001.
@@ -60,5 +62,10 @@ Default installation prefix is /usr/local
 Install to the user's home directory:
 
   make install-docs prefix=~/.local
+
+
+Website
+-------
+http://code.google.com/p/mkvtomp4/
 
 

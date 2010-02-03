@@ -46,7 +46,7 @@ setup(name='mkvtomp4',
       platforms=["any"],
       classifiers=filter(None, classifiers.split("\n")),
       url='http://code.google.com/p/mkvtomp4/',
-      version='1.0b',
+      version='1.0',
       scripts=['mkvtomp4']
       )
 

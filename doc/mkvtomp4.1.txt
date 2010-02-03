@@ -1,7 +1,7 @@
 MKVTOMP4(1)
 ===========
 :man source: mkvtomp4
-:man version: 1.0b
+:man version: 1.0
 :man manual: mkvtomp4 manual
 
 

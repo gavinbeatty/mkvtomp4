@@ -16,7 +16,7 @@ except ImportError:
 
 class Options(object):
     def __init__(self):
-        self.version = '1.0b'
+        self.version = '1.0'
         self.verbose = 0
         self.a_bitrate = '328'
         self.a_channels = '5.1'

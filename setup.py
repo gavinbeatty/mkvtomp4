@@ -1,0 +1,52 @@
+#!/usr/bin/python
+
+"""Convert H.264 mkv files to mp4 files playable on the PS3
+
+Uses mpeg4ip, mkvtoolnix and ffmpeg to convert troublesome mkv files to mp4.
+They will be playable on the Sony PS3.
+"""
+
+from distutils.core import setup
+
+
+# A list of classifiers can be found here:
+#   http://pypi.python.org/pypi?%3Aaction=list_classifiers
+classifiers = """\
+Natural Language :: English
+Development Status :: 4 - Beta
+Environment :: Console
+Topic :: Multimedia
+Topic :: Multimedia :: Sound/Audio :: Conversion
+Topic :: Multimedia :: Video :: Conversion
+Intended Audience :: End Users/Desktop
+License :: OSI Approved :: GNU General Public License (GPL)
+Programming Language :: Python
+Operating System :: OS Independent
+"""
+
+from sys import version_info
+
+if version_info < (2, 3):
+    _setup = setup
+    def setup(**kwargs):
+        if kwargs.has_key("classifiers"):
+            del kwargs["classifiers"]
+        _setup(**kwargs)
+
+doclines = __doc__.split("\n")
+
+setup(name='mkvtomp4',
+      description=doclines[0],
+      long_description="\n".join(doclines[2:]),
+      author='Gavin Beatty',
+      author_email='gavinbeatty@gmail.com',
+      maintainer='Gavin Beatty',
+      maintainer_email='gavinbeatty@gmail.com',
+      license = "http://www.gnu.org/licenses/gpl-3.0.txt",
+      platforms=["any"],
+      classifiers=filter(None, classifiers.split("\n")),
+      url='http://code.google.com/p/mkvtomp4/',
+      version='1.0b',
+      scripts=['mkvtomp4']
+      )
+

@@ -1,0 +1,111 @@
+MKVTOMP4(1)
+===========
+:man source: mkvtomp4
+:man version: 1.0b
+:man manual: mkvtomp4 manual
+
+
+NAME
+-----
+mkvtomp4 - convert H.264 mkv files to mp4 files playable on the PS3
+
+
+SYNOPSIS
+--------
+*mkvtomp4* ['OPTIONS'] [--] '<mkvfile>'
+*mkvtomp4* *--correct-profile-only* [--] '<rawh264file>'
+
+
+DESCRIPTION
+-----------
+Uses mpeg4ip, mkvtoolnix and ffmpeg to convert troublesome mkv files to mp4.
+The conversion does not re-encode the video and only re-encodes the audio if
+it doesn't use AAC codec (one can override this behaviour using
+*--audio-codec*). They will be playable on the Sony PS3.
+
+
+OPTIONS
+-------
+*--audio-bitrate*='<bitrate>'::
+    If/When converting audio, use the given bitrate. e.g., '128'.
+
+*--audio-channels*='<channels>'::
+    If/When converting audio, use '<channels>' channels in the output. e.g., '5.1'.
+
+*--audio-codec*='<codec>'::
+    If/When converting audio, convert to '<codec>'. Default is 'libfaac'. This
+    should be something supported by *ffmpeg*.
+
+*-o, --output*='<outfile>'::
+    Put the completed mp4 into '<outfile>'.
+
+*--keep-temp-files*::
+    Keep all temporary files created while converting.
+
+*-n, --dry-run*::
+    Don't run any commands, but print them in a shellquoted format that can be
+    safely copy-pasted by the user.
+
+*--stop-before-extract-video*::
+    Exit before extracting video from '<mkvfile>'.
+
+*--stop-before-correct-profile*::
+    Exit before correcting profile of raw H.264 stream.
+
+*--stop-before-extract-audio*::
+    Exit before extracting audio from '<mkvfile>'.
+
+*--stop-before-convert-audio*::
+    Exit before converting audio previously extracted. This will stop even if
+    the audio does not need to be converted.
+
+*--stop-before-video-mp4*::
+    Exit before adding the extracted video to the mp4 container.
+
+*--stop-before-hinting-mp4*::
+    Exit before hinting the mp4 file with the video track.
+
+*--stop-before-audio-mp4*::
+    Exit before adding the extracted (and possibly converted) audio to the mp4
+    container.
+
+`<mkvfile>`::
+    The Matroska (.mkv) file you wish to convert.
+
+
+*--correct-profile-only*::
+    Only correct the profile
+
+`<rawh264file>`::
+    The raw H.264 stream file that will have its profile corrected for use on
+    the PS3.
+
+
+EXIT STATUS
+-----------
+0 on success and non-zero on failure.
+
+
+AUTHOR
+------
+Gavin Beatty <gavinbeatty@gmail.com>
+
+
+RESOURCES
+---------
+Website: <http://code.google.com/p/mkvtomp4/>
+
+
+REPORTING BUGS
+--------------
+Please report all bugs and wishes to <gavinbeatty@gmail.com>
+
+
+COPYING
+-------
+mkvtomp4 Copyright \(C) 2010 Gavin Beatty, <gavinbeatty@gmail.com>
+
+Free use of this software is granted under the terms of the GNU General Public
+License version 3, or at your option, any later version. (GPLv3+)
+
+

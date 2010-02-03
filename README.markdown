@@ -3,7 +3,9 @@ mkvtomp4
 Gavin Beatty <gavinbeatty@gmail.com>
 
 mkvtomp4: Uses mpeg4ip, mkvtoolnix and ffmpeg to convert troublesome mkv files
-to mp4. They will be playable on the Sony PS3.
+to mp4. The conversion does not re-encode the video and only re-encodes the
+audio if it doesn't use AAC codec (one can override this behaviour using
+--audio-codec). They will be playable on the Sony PS3.
 
     Usage: mkvtomp4.py [OPTIONS] [--] <mkvfile>
 

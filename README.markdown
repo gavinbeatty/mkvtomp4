@@ -43,13 +43,13 @@ Install
 -------
 
 Use setuptools in the usual way:
-  python setup.py install
+    python setup.py install
 
 To install only for the current user:
-  python setup.py install --user
+    python setup.py install --user
 
 For additional help:
-  python setup.py --help
+    python setup.py --help
 
 
 Install documentation
@@ -57,11 +57,11 @@ Install documentation
 
 Default installation prefix is /usr/local
 
-  sudo make install-docs
+    sudo make install-docs
 
 Install to the user's home directory:
 
-  make install-docs prefix=~/.local
+    make install-docs prefix=~/.local
 
 
 Website

@@ -217,14 +217,16 @@ class MkvInfo(object):
                 if match is not None:
                     codec = match.group(1)
                     # unrecognized track types shouldn't have codec_match := None
-                    codec_match = True
+                    codec_match = None
                     if in_track_type == 'audio':
                         codec_match = MkvInfo.a_codec_re.search(codec)
+                        if codec_match is None:
+                            die('unrecognised codec: %s' % codec)
                     elif in_track_type == 'video':
                         codec_match = MkvInfo.v_codec_re.search(codec)
-                    if codec_match is None:
-                        die('unrecognised codec: %s' % codec)
-                    else:
+                        if codec_match is None:
+                            die('unrecognised codec: %s' % codec)
+                    if codec_match is not None:
                         key = in_track_type + '_codec'
                         self.track[key] = codec_match.group(2)
                         verbose('MkvInfo: found %s: %s' % (key, self.track[key]))

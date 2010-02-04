@@ -70,7 +70,7 @@ Default installation prefix is /usr/local
 
     sudo make install-docs
 
-Install to the user's home directory:
+Install to your own prefix:
 
     make install-docs prefix=~/.local
 

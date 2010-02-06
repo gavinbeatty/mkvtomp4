@@ -70,10 +70,10 @@ def version(**kwargs):
     global g_opts
     prin(g_opts.version, **kwargs)
 
-def verbose(*args, **kwargs):
+def verbose(level, *args, **kwargs):
     local = kwargs.pop('verbose', 0)
     global g_opts
-    if g_opts.verbose > 0 or local > 0:
+    if g_opts.verbose >= level or local >= level:
         prin('verbose:', *args, **kwargs)
 
 def __sq(one):
@@ -92,12 +92,12 @@ def command(*cmd, **kwargs):
     if verboos is not None:
         verbose_kwargs['verbose'] = verboos
     if len(kwargs) != 0:
-        verbose('command: Popen kwargs: %s' % str(kwargs), **verbose_kwargs)
+        verbose(1, 'command: Popen kwargs: %s' % str(kwargs), **verbose_kwargs)
     if dry_run:
         prin(sq(*cmd))
     else:
         try:
-            verbose('command: %s' % str(cmd), **verbose_kwargs)
+            verbose(1, 'command: %s' % str(cmd), **verbose_kwargs)
             proc = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE, close_fds=True, **kwargs)
         except OSError, e:
             die('not found: %s' % str(e))
@@ -120,16 +120,21 @@ def ffmpeg_convert_audio(old, new, **kwargs):
     bitrate = kwargs.pop('bitrate', '128')
     channels = kwargs.pop('channels', '2')
     codec = kwargs.pop('codec', 'libfaac')
+    verbose = kwargs.get('verbose', 0)
     if channels == '5.1':
         channels = '6'
 
-    cmdlist = ('ffmpeg', '-i', old, '-ac', channels, '-acodec', codec
-        , '-ab', bitrate+'k', new)
+    if verbose > 1:
+        cmdlist = ['ffmpeg', str(verbose - 1)]
+    else:
+        cmdlist = ['ffmpeg']
+    cmdlist.extend(['-i', old, '-ac', channels, '-acodec', codec
+        , '-ab', bitrate+'k', new])
     cmd = sq(*cmdlist)
     dry_run = kwargs.pop('dry_run', False)
     verbose_kwargs = {}
     verbose_kwargs['verbose'] = kwargs.pop('verbose', 0)
-    verbose('command:', str(cmdlist), **verbose_kwargs)
+    verbose(1, 'command:', str(cmdlist), **verbose_kwargs)
     if not dry_run:
         os.system(cmd)
     else:
@@ -149,7 +154,7 @@ def convert_audio(old, new, **kwargs):
             if not keep_temp:
                 try:
                     os.remove(new+'.wav')
-                except Exception:
+                except OSError:
                     pass
     else:
         ffmpeg_convert_audio(old, new, **kwargs)
@@ -162,13 +167,18 @@ def correct_profile(video, **kwargs):
         fobj = open(video, 'r+b')
         try:
             fobj.seek(7)
-            verbose('correcting profile:', video)
+            verbose(1, 'correcting profile:', video)
             fobj.write(level_string)
         finally:
             fobj.close()
 
 def mkv_extract_track(mkv, out, track, **kwargs):
-    command('mkvextract', 'tracks', mkv, "%s:%s" % (str(track), out), **kwargs)
+    verbose = kwargs.get('verbose', 0)
+    cmd = ['mkvextract', 'tracks', mkv]
+    if verbose > 0:
+        cmd.extend(['-v'])
+    cmd.extend(["%s:%s" % (str(track), out)])
+    command(*cmd, **kwargs)
 
 class MkvInfo(object):
     track_no_re = None
@@ -202,13 +212,13 @@ class MkvInfo(object):
             if match is not None:
                 in_track_number = match.group(1)
                 in_track_type = None
-                verbose('MkvInfo: in track number: %s' % in_track_number)
+                verbose(1, 'MkvInfo: in track number: %s' % in_track_number)
                 continue
             if in_track_number is not None:
                 match = MkvInfo.track_type_re.search(line)
                 if match is not None:
                     in_track_type = match.group(1)
-                    verbose('MkvInfo: in track type: %s' % in_track_type)
+                    verbose(1, 'MkvInfo: in track type: %s' % in_track_type)
                     self.track[in_track_type] = in_track_number
                     if in_track_type != 'audio' and in_track_type != 'video':
                         warning('ignoring track type: %s' % in_track_type)
@@ -229,7 +239,7 @@ class MkvInfo(object):
                     if codec_match is not None:
                         key = in_track_type + '_codec'
                         self.track[key] = codec_match.group(2)
-                        verbose('MkvInfo: found %s: %s' % (key, self.track[key]))
+                        verbose(1, 'MkvInfo: found %s: %s' % (key, self.track[key]))
             if in_track_type == 'video':
                 match = MkvInfo.fps_re.search(line)
                 if match is not None:
@@ -291,7 +301,7 @@ def real_main(mkv, argv0):
                 try:
                     os.remove(video)
                     os.remove(audio)
-                except Exception:
+                except OSError:
                     pass
         except Exception:
             pass
@@ -325,7 +335,7 @@ def main(argv=None):
             version()
             sys.exit(0)
         elif opt in ('-v', '--verbose'):
-            g_opts.verbose = 1
+            g_opts.verbose = _gopts.verbose + 1
         elif opt == '--audio-bitrate':
             g_opts.a_bitrate = optarg
         elif opt == '--audio-channels':

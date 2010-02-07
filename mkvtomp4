@@ -40,7 +40,7 @@ def prin(*args, **kwargs):
     sep = kwargs.pop('sep', ' ')
     end = kwargs.pop('end', '\n')
     if len(kwargs) != 0:
-        warning('prin: unknown kwargs given: %s' % kwargs)
+        warning_print('prin: unknown kwargs given: %s' % kwargs)
 
     if len(args) > 0:
         fobj.write(args[0])
@@ -49,28 +49,28 @@ def prin(*args, **kwargs):
                 fobj.write(sep + arg)
     fobj.write(end)
 
-def error(*args, **kwargs):
+def error_print(*args, **kwargs):
     kwargs['fobj'] = sys.stderr
     prin("error:", *args, **kwargs)
 
 def die(*args, **kwargs):
-    error(*args, **kwargs)
+    error_print(*args, **kwargs)
     sys.exit(1)
 
-def warning(*args, **kwargs):
+def warning_print(*args, **kwargs):
     kwargs['fobj'] = sys.stderr
     prin("warning:", *args, **kwargs)
 
-def usage(fobj=None):
+def usage_print(fobj=None):
     if fobj is None:
         fobj = sys.stdout
     prin('usage: mkvtomp4 [OPTIONS] [--] <mkvfile>', fobj=fobj)
 
-def version(**kwargs):
+def version_print(**kwargs):
     global g_opts
     prin(g_opts.version, **kwargs)
 
-def verbose(level, *args, **kwargs):
+def verbose_print(level, *args, **kwargs):
     local = kwargs.pop('verbose', 0)
     global g_opts
     if g_opts.verbose >= level or local >= level:
@@ -92,16 +92,17 @@ def command(*cmd, **kwargs):
     if verboos is not None:
         verbose_kwargs['verbose'] = verboos
     if len(kwargs) != 0:
-        verbose(1, 'command: Popen kwargs: %s' % str(kwargs), **verbose_kwargs)
+        verbose_print(1, 'command: Popen kwargs: %s' % str(kwargs), **verbose_kwargs)
     if dry_run:
         prin(sq(*cmd))
     else:
         try:
-            verbose(1, 'command: %s' % str(cmd), **verbose_kwargs)
+            verbose_print(1, 'command: %s' % str(cmd), **verbose_kwargs)
             proc = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE, close_fds=True, **kwargs)
         except OSError, e:
             die('not found: %s' % str(e))
         chout, cherr = proc.communicate()
+        verbose_print(1, 'command: stdout:', chout, '\ncommand: stderr:', cherr)
         if proc.returncode != 0:
             die('failure: %s' % cherr, end='')
         return chout
@@ -120,12 +121,12 @@ def ffmpeg_convert_audio(old, new, **kwargs):
     bitrate = kwargs.pop('bitrate', '128')
     channels = kwargs.pop('channels', '2')
     codec = kwargs.pop('codec', 'libfaac')
-    verbose = kwargs.get('verbose', 0)
+    verboos = kwargs.get('verbose', 0)
     if channels == '5.1':
         channels = '6'
 
-    if verbose > 1:
-        cmdlist = ['ffmpeg', str(verbose - 1)]
+    if verboos > 1:
+        cmdlist = ['ffmpeg', '-v', str(verboos - 1)]
     else:
         cmdlist = ['ffmpeg']
     cmdlist.extend(['-i', old, '-ac', channels, '-acodec', codec
@@ -134,7 +135,7 @@ def ffmpeg_convert_audio(old, new, **kwargs):
     dry_run = kwargs.pop('dry_run', False)
     verbose_kwargs = {}
     verbose_kwargs['verbose'] = kwargs.pop('verbose', 0)
-    verbose(1, 'command:', str(cmdlist), **verbose_kwargs)
+    verbose_print(1, 'command:', str(cmdlist), **verbose_kwargs)
     if not dry_run:
         os.system(cmd)
     else:
@@ -167,15 +168,15 @@ def correct_profile(video, **kwargs):
         fobj = open(video, 'r+b')
         try:
             fobj.seek(7)
-            verbose(1, 'correcting profile:', video)
+            verbose_print(1, 'correcting profile:', video)
             fobj.write(level_string)
         finally:
             fobj.close()
 
 def mkv_extract_track(mkv, out, track, **kwargs):
-    verbose = kwargs.get('verbose', 0)
+    verboos = kwargs.get('verbose', 0)
     cmd = ['mkvextract', 'tracks', mkv]
-    if verbose > 0:
+    if verboos > 0:
         cmd.extend(['-v'])
     cmd.extend(["%s:%s" % (str(track), out)])
     command(*cmd, **kwargs)
@@ -212,16 +213,16 @@ class MkvInfo(object):
             if match is not None:
                 in_track_number = match.group(1)
                 in_track_type = None
-                verbose(1, 'MkvInfo: in track number: %s' % in_track_number)
+                verbose_print(1, 'MkvInfo: in track number: %s' % in_track_number)
                 continue
             if in_track_number is not None:
                 match = MkvInfo.track_type_re.search(line)
                 if match is not None:
                     in_track_type = match.group(1)
-                    verbose(1, 'MkvInfo: in track type: %s' % in_track_type)
+                    verbose_print(1, 'MkvInfo: in track type: %s' % in_track_type)
                     self.track[in_track_type] = in_track_number
                     if in_track_type != 'audio' and in_track_type != 'video':
-                        warning('ignoring track type: %s' % in_track_type)
+                        warning_print('ignoring track type: %s' % in_track_type)
             if in_track_number is not None:
                 match = MkvInfo.codec_re.search(line)
                 if match is not None:
@@ -239,7 +240,7 @@ class MkvInfo(object):
                     if codec_match is not None:
                         key = in_track_type + '_codec'
                         self.track[key] = codec_match.group(2)
-                        verbose(1, 'MkvInfo: found %s: %s' % (key, self.track[key]))
+                        verbose_print(1, 'MkvInfo: found %s: %s' % (key, self.track[key]))
             if in_track_type == 'video':
                 match = MkvInfo.fps_re.search(line)
                 if match is not None:
@@ -265,15 +266,18 @@ def real_main(mkv, argv0):
     try:
         video = mkv+'.h264'
         exit_if(g_opts.stop_v_ex)
-        mkv_extract_track(mkv, video, mkvinfo.track['video'], dry_run=g_opts.dry_run)
+        mkv_extract_track(mkv, video, mkvinfo.track['video']
+            , dry_run=g_opts.dry_run, verbose=g_opts.verbose)
 
         exit_if(g_opts.stop_correct)
-        correct_profile(video, argv0=argv0, dry_run=g_opts.dry_run)
+        correct_profile(video, argv0=argv0
+            , dry_run=g_opts.dry_run, verbose=g_opts.verbose)
 
         a_codec = mkvinfo.track['audio_codec']
         audio = mkv+'.'+a_codec.lower()
         exit_if(g_opts.stop_a_ex)
-        mkv_extract_track(mkv, audio, mkvinfo.track['audio'], dry_run=g_opts.dry_run)
+        mkv_extract_track(mkv, audio, mkvinfo.track['audio']
+            , dry_run=g_opts.dry_run, verbose=g_opts.verbose)
         exit_if(g_opts.stop_a_conv)
         if a_codec != 'AAC':
             audio, oldaudio = audio+'.aac', audio
@@ -282,24 +286,32 @@ def real_main(mkv, argv0):
                 , channels=g_opts.a_channels
                 , keep_temp=g_opts.keep_temp_files
                 , dry_run=g_opts.dry_run
+                , verbose=g_opts.verbose
             )
 
         if g_opts.output is None:
             g_opts.output = mkv+'.mp4'
         exit_if(g_opts.stop_v_mp4)
         mp4_add_video(g_opts.output, video, fps=mkvinfo.track['fps']
-            , dry_run=g_opts.dry_run)
+            , dry_run=g_opts.dry_run
+            , verbose=g_opts.verbose
+        )
         exit_if(g_opts.stop_hint_mp4)
-        mp4_add_hint(g_opts.output, dry_run=g_opts.dry_run)
+        mp4_add_hint(g_opts.output, dry_run=g_opts.dry_run
+            , verbose=g_opts.verbose)
 
         exit_if(g_opts.stop_a_mp4)
-        mp4_add_audio_optimize(g_opts.output, audio, dry_run=g_opts.dry_run)
+        mp4_add_audio_optimize(g_opts.output, audio, dry_run=g_opts.dry_run
+            , verbose=g_opts.verbose)
 
     finally:
         try:
             if not g_opts.keep_temp_files:
                 try:
                     os.remove(video)
+                except OSError:
+                    pass
+                try:
                     os.remove(audio)
                 except OSError:
                     pass
@@ -329,13 +341,13 @@ def main(argv=None):
 
     for opt, optarg in opts:
         if opt in ('-h', '--help', '--usage'):
-            usage()
+            usage_print()
             sys.exit(0)
         elif opt == '--version':
-            version()
+            version_print()
             sys.exit(0)
         elif opt in ('-v', '--verbose'):
-            g_opts.verbose = _gopts.verbose + 1
+            g_opts.verbose = g_opts.verbose + 1
         elif opt == '--audio-bitrate':
             g_opts.a_bitrate = optarg
         elif opt == '--audio-channels':
@@ -367,10 +379,10 @@ def main(argv=None):
 
     if len(args) == 0:
         usage_io = StringIO()
-        usage(fobj=usage_io)
+        usage_print(fobj=usage_io)
         die(usage_io.getvalue(), end='')
     elif len(args) > 1:
-        usage(fobj=sys.stderr)
+        usage_print(fobj=sys.stderr)
 
     mkv = args[0]
 

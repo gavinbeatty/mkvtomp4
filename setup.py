@@ -47,6 +47,9 @@ setup(name='mkvtomp4',
       classifiers=filter(None, classifiers.split("\n")),
       url='http://code.google.com/p/mkvtomp4/',
       version='1.0',
-      scripts=['mkvtomp4']
+      scripts=['mkvtomp4'],
+      data_files=[('share/doc/mkvtomp4', ['README.markdown'])
+        , ('share/man/man1', ['doc/mkvtomp4.1', 'doc/mkvtomp4.1.html'])
+        ]
       )
 

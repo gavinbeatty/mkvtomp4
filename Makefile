@@ -14,9 +14,9 @@ clean:
 	rm -f doc/mkvtomp4.1 doc/mkvtomp4.1.html
 
 install-docs: doc/mkvtomp4.1 doc/mkvtomp4.1.html
-	install -d -m 0755 $(prefix)/share/man/man1
-	install -m 0644 doc/mkvtomp4.1 $(prefix)/share/man/man1/
-	install -m 0644 doc/mkvtomp4.1.html $(prefix)/share/man/man1/
+	install -d -m 0755 $(DESTDIR)$(prefix)/share/man/man1
+	install -m 0644 doc/mkvtomp4.1 $(DESTDIR)$(prefix)/share/man/man1/
+	install -m 0644 doc/mkvtomp4.1.html $(DESTDIR)$(prefix)/share/man/man1/
 
 install-doc: install-docs
 

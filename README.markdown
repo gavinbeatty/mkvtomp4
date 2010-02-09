@@ -54,6 +54,7 @@ Install
 -------
 
 Use setuptools in the usual way:
+    python setup.py build
     sudo python setup.py install
 
 To install only for the current user:
@@ -67,11 +68,9 @@ Install documentation
 ---------------------
 
 Default installation prefix is /usr/local
-
     sudo make install-docs
 
 Install to your own prefix:
-
     make install-docs prefix=~/.local
 
 

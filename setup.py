@@ -48,8 +48,8 @@ setup(name='mkvtomp4',
       url='http://code.google.com/p/mkvtomp4/',
       version='1.0',
       scripts=['mkvtomp4'],
-      data_files=[('share/doc/mkvtomp4', ['README.markdown'])
-        , ('share/man/man1', ['doc/mkvtomp4.1', 'doc/mkvtomp4.1.html'])
-        ]
+#      data_files=[('share/doc/mkvtomp4', ['README.markdown'])
+#        , ('share/man/man1', ['doc/mkvtomp4.1', 'doc/mkvtomp4.1.html'])
+#        ]
       )
 

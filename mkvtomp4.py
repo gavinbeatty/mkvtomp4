@@ -2,6 +2,8 @@
 
 """Convert H.264 mkv files to mp4 files playable on the PS3."""
 
+# @VERSION@
+
 import os
 import sys
 import re
@@ -16,7 +18,6 @@ except ImportError:
 
 class Options(object):
     def __init__(self):
-        self.version = '1.1a'
         self.verbose = 0
         self.a_bitrate = '328'
         self.a_channels = '5.1'
@@ -67,8 +68,7 @@ def usage_print(fobj=None):
     prin('usage: mkvtomp4 [OPTIONS] [--] <mkvfile>', fobj=fobj)
 
 def version_print(**kwargs):
-    global g_opts
-    prin(g_opts.version, **kwargs)
+    prin(__version__, **kwargs)
 
 def verbose_print(level, *args, **kwargs):
     local = kwargs.pop('verbose', 0)

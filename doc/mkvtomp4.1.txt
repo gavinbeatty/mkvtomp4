@@ -1,8 +1,5 @@
 MKVTOMP4(1)
 ===========
-:man source: mkvtomp4
-:man version: 1.1a
-:man manual: mkvtomp4 manual
 
 
 NAME

@@ -2,10 +2,12 @@ mkvtomp4
 ========
 Gavin Beatty <gavinbeatty@gmail.com>
 
-mkvtomp4: Uses mpeg4ip, mkvtoolnix and ffmpeg to convert troublesome mkv files
-to mp4. The conversion does not re-encode the video and only re-encodes the
-audio if it doesn't use AAC codec (one can override this behaviour using
---audio-codec). They will be playable on the Sony PS3.
+mkvtomp4: Uses mpeg4ip or GPAC's MP4Box, mkvtoolnix and ffmpeg to convert
+troublesome mkv files to mp4.
+The conversion does not re-encode the video and only re-encodes the audio if
+it doesn't use AAC codec (one can override this behaviour using
+`--audio-codec`).
+They will be playable on the Sony PS3.
 
 From the manual:
 
@@ -115,7 +117,7 @@ Dependencies
 
 Tools:
 * mkvtoolnix
-* mpeg4ip
+* mpeg4ip or GPAC's MP4Box
 * ffmpeg
 
 On Linux, use your package manager to install.
@@ -165,7 +167,7 @@ For additional help:
 Install documentation
 ---------------------
 
-Default installation prefix is /usr/local
+Default installation prefix is `/usr/local`:
     sudo make install-docs
 
 Install to your own prefix:

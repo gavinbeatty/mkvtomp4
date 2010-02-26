@@ -11,15 +11,24 @@ SYNOPSIS
        mkvtomp4 --correct-profile-only [--] <rawh264file>
 
 DESCRIPTION
-       Uses mpeg4ip, mkvtoolnix and ffmpeg to convert troublesome mkv files to
-       mp4. The conversion does not re-encode the video and only re-encodes
-       the audio if it doesn’t use AAC codec (one can override this behaviour
-       using --audio-codec). They will be playable on the Sony PS3.
+       Uses mpeg4ip or GPACs MP4Box, mkvtoolnix and ffmpeg to convert
+       troublesome mkv files to mp4. The conversion does not re-encode the
+       video and only re-encodes the audio if it doesnt use AAC codec (one
+       can override this behaviour using --audio-codec). They will be playable
+       on the Sony PS3.
 
-       We depend on: mkvtoolnix, mpeg4ip for the conversion. ffmpeg is
-       optional but required for audio transcoding.
+       We depend on: mkvtoolnix, mpeg4ip or GPACs MP4Box for the conversion.
+       ffmpeg is optional but required for audio transcoding.
 
 OPTIONS
+       --use-mp4creator or --use-mp4box
+           Specify which mp4 backend to use. mp4creator is the default.
+
+       --audio-delay-ms=<delay_ms>
+           When importing the audio track, delay by <delay_ms> milliseconds.
+           e.g., --audio-delay-ms=1000 delays by 1 second. Not supported by
+           mp4creator.
+
        --audio-bitrate=<bitrate>
            If/When converting audio, use the given bitrate. e.g., 128.
 
@@ -38,7 +47,7 @@ OPTIONS
            Keep all temporary files created while converting.
 
        -n, --dry-run
-           Don’t run any commands, but print them in a shellquoted format that
+           Dont run any commands, but print them in a shellquoted format that
            can be safely copy-pasted by the user.
 
        --stop-before-extract-video
@@ -95,4 +104,4 @@ COPYING
 
 
 
-                                  02/17/2010                       MKVTOMP4(1)
+                                  02/27/2010                       MKVTOMP4(1)

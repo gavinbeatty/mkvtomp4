@@ -558,16 +558,36 @@ footnotes: function () {
 </div>
 <h2 id="_description">DESCRIPTION</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>Uses mpeg4ip, mkvtoolnix and ffmpeg to convert troublesome mkv files to mp4.
+<div class="paragraph"><p>Uses mpeg4ip or GPAC&#8217;s MP4Box, mkvtoolnix and ffmpeg to convert troublesome
+mkv files to mp4.
 The conversion does not re-encode the video and only re-encodes the audio if
 it doesn&#8217;t use AAC codec (one can override this behaviour using
-<strong>--audio-codec</strong>). They will be playable on the Sony PS3.</p></div>
-<div class="paragraph"><p>We depend on: <strong>mkvtoolnix</strong>, <strong>mpeg4ip</strong> for the conversion. <strong>ffmpeg</strong> is optional
-but required for audio transcoding.</p></div>
+<strong>--audio-codec</strong>).
+They will be playable on the Sony PS3.</p></div>
+<div class="paragraph"><p>We depend on: <strong>mkvtoolnix</strong>, <strong>mpeg4ip</strong> or GPAC&#8217;s <strong>MP4Box</strong> for the conversion.
+<strong>ffmpeg</strong> is optional but required for audio transcoding.</p></div>
 </div>
 <h2 id="_options">OPTIONS</h2>
 <div class="sectionbody">
 <div class="dlist"><dl>
+<dt class="hdlist1">
+<strong>--use-mp4creator</strong> or <strong>--use-mp4box</strong>
+</dt>
+<dd>
+<p>
+    Specify which mp4 backend to use. mp4creator is the default.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--audio-delay-ms</strong>=<em>&lt;delay_ms&gt;</em>
+</dt>
+<dd>
+<p>
+    When importing the audio track, delay by <em>&lt;delay_ms&gt;</em> milliseconds.
+    e.g., <strong>--audio-delay-ms</strong>=<em>1000</em> delays by 1 second.
+    Not supported by mp4creator.
+</p>
+</dd>
 <dt class="hdlist1">
 <strong>--audio-bitrate</strong>=<em>&lt;bitrate&gt;</em>
 </dt>
@@ -729,7 +749,7 @@ License version 3, or at your option, any later version. (GPLv3+)</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-02-17 00:10:43 CEST
+Last updated 2010-02-27 00:12:20 CEST
 </div>
 </div>
 </body>

@@ -7,9 +7,107 @@ to mp4. The conversion does not re-encode the video and only re-encodes the
 audio if it doesn't use AAC codec (one can override this behaviour using
 --audio-codec). They will be playable on the Sony PS3.
 
-    Usage: mkvtomp4.py [OPTIONS] [--] <mkvfile>
+From the manual:
 
-For more usage details, see the manual.
+    NAME
+           mkvtomp4 - convert H.264 mkv files to mp4 files playable on the PS3
+
+    SYNOPSIS
+           mkvtomp4 [OPTIONS] [--] <mkvfile>
+
+           mkvtomp4 --correct-profile-only [--] <rawh264file>
+
+    DESCRIPTION
+           Uses mpeg4ip or GPACs MP4Box, mkvtoolnix and ffmpeg to convert
+           troublesome mkv files to mp4. The conversion does not re-encode the
+           video and only re-encodes the audio if it doesnt use AAC codec (one
+           can override this behaviour using --audio-codec). They will be playable
+           on the Sony PS3.
+
+           We depend on: mkvtoolnix, mpeg4ip or GPACs MP4Box for the conversion.
+           ffmpeg is optional but required for audio transcoding.
+
+    OPTIONS
+           --use-mp4creator or --use-mp4box
+               Specify which mp4 backend to use. mp4creator is the default.
+
+           --audio-delay-ms=<delay_ms>
+               When importing the audio track, delay by <delay_ms> milliseconds.
+               e.g., --audio-delay-ms=1000 delays by 1 second. Not supported by
+               mp4creator.
+
+           --audio-bitrate=<bitrate>
+               If/When converting audio, use the given bitrate. e.g., 128.
+
+           --audio-channels=<channels>
+               If/When converting audio, use <channels> channels in the output.
+               e.g., 5.1.
+
+           --audio-codec=<codec>
+               If/When converting audio, convert to <codec>. Default is libfaac.
+               This should be something supported by ffmpeg.
+
+           -o, --output=<outfile>
+               Put the completed mp4 into <outfile>.
+
+           --keep-temp-files
+               Keep all temporary files created while converting.
+
+           -n, --dry-run
+               Dont run any commands, but print them in a shellquoted format that
+               can be safely copy-pasted by the user.
+
+           --stop-before-extract-video
+               Exit before extracting video from <mkvfile>.
+
+           --stop-before-correct-profile
+               Exit before correcting profile of raw H.264 stream.
+
+           --stop-before-extract-audio
+               Exit before extracting audio from <mkvfile>.
+
+           --stop-before-convert-audio
+               Exit before converting audio previously extracted. This will stop
+               even if the audio does not need to be converted.
+
+           --stop-before-video-mp4
+               Exit before adding the extracted video to the mp4 container.
+
+           --stop-before-hinting-mp4
+               Exit before hinting the mp4 file with the video track.
+
+           --stop-before-audio-mp4
+               Exit before adding the extracted (and possibly converted) audio to
+               the mp4 container.
+
+           <mkvfile>
+               The Matroska (.mkv) file you wish to convert.
+
+           --correct-profile-only
+               Only correct the profile
+
+           <rawh264file>
+               The raw H.264 stream file that will have its profile corrected for
+               use on the PS3.
+
+    EXIT STATUS
+           0 on success and non-zero on failure.
+
+    AUTHOR
+           Gavin Beatty <gavinbeatty@gmail.com>
+
+    RESOURCES
+           Website: http://code.google.com/p/mkvtomp4/
+
+    REPORTING BUGS
+           Please report all bugs and wishes to <gavinbeatty@gmail.com>
+
+    COPYING
+           mkvtomp4 Copyright (C) 2010 Gavin Beatty, <gavinbeatty@gmail.com>
+
+           Free use of this software is granted under the terms of the GNU General
+           Public License version 3, or at your option, any later version.
+           (GPLv3+)
 
 
 Dependencies

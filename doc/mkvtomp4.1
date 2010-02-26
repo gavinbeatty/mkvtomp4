@@ -2,12 +2,12 @@
 .\"     Title: mkvtomp4
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 02/17/2010
+.\"      Date: 02/27/2010
 .\"    Manual: \ \&
 .\"    Source: \ \&
 .\"  Language: English
 .\"
-.TH "MKVTOMP4" "1" "02/17/2010" "\ \&" "\ \&"
+.TH "MKVTOMP4" "1" "02/27/2010" "\ \&" "\ \&"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -27,10 +27,24 @@ mkvtomp4 \- convert H\&.264 mkv files to mp4 files playable on the PS3
 \fBmkvtomp4\fR \fB\-\-correct\-profile\-only\fR [\-\-] \fI<rawh264file>\fR
 .SH "DESCRIPTION"
 .sp
-Uses mpeg4ip, mkvtoolnix and ffmpeg to convert troublesome mkv files to mp4\&. The conversion does not re\-encode the video and only re\-encodes the audio if it doesn\(cqt use AAC codec (one can override this behaviour using \fB\-\-audio\-codec\fR)\&. They will be playable on the Sony PS3\&.
+Uses mpeg4ip or GPAC\(cqs MP4Box, mkvtoolnix and ffmpeg to convert troublesome mkv files to mp4\&. The conversion does not re\-encode the video and only re\-encodes the audio if it doesn\(cqt use AAC codec (one can override this behaviour using \fB\-\-audio\-codec\fR)\&. They will be playable on the Sony PS3\&.
 .sp
-We depend on: \fBmkvtoolnix\fR, \fBmpeg4ip\fR for the conversion\&. \fBffmpeg\fR is optional but required for audio transcoding\&.
+We depend on: \fBmkvtoolnix\fR, \fBmpeg4ip\fR or GPAC\(cqs \fBMP4Box\fR for the conversion\&. \fBffmpeg\fR is optional but required for audio transcoding\&.
 .SH "OPTIONS"
+.PP
+\fB\-\-use\-mp4creator\fR or \fB\-\-use\-mp4box\fR
+.RS 4
+Specify which mp4 backend to use\&. mp4creator is the default\&.
+.RE
+.PP
+\fB\-\-audio\-delay\-ms\fR=\fI<delay_ms>\fR
+.RS 4
+When importing the audio track, delay by
+\fI<delay_ms>\fR
+milliseconds\&. e\&.g\&.,
+\fB\-\-audio\-delay\-ms\fR=\fI1000\fR
+delays by 1 second\&. Not supported by mp4creator\&.
+.RE
 .PP
 \fB\-\-audio\-bitrate\fR=\fI<bitrate>\fR
 .RS 4

@@ -23,7 +23,7 @@ clean: clean-bin clean-doc
 .PHONY: all bin doc clean
 
 $(PROJECT): $(PROJECT).py $(VERSION_DEP)
-	$(SED) -e 's/^# @VERSION@/__version__ = $(VERSION)/' \
+	$(SED) -e "s/^# @VERSION@/__version__ = '$(VERSION)'/" \
 	$(PROJECT).py > $(PROJECT)
 	@chmod +x $(PROJECT)
 setup.py: setup.py.in

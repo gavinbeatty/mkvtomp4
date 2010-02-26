@@ -290,7 +290,7 @@ def real_main(mkv, argv0):
             )
 
         if g_opts.output is None:
-            g_opts.output = mkv+'.mp4'
+            g_opts.output = os.path.splitext(mkv,'.mkv')[0]+'.mp4'
         exit_if(g_opts.stop_v_mp4)
         mp4_add_video(g_opts.output, video, fps=mkvinfo.track['fps']
             , dry_run=g_opts.dry_run

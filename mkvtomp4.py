@@ -22,6 +22,7 @@ class Options(object):
         self.a_bitrate = '328'
         self.a_channels = '5.1'
         self.a_codec = 'libfaac'
+        self.a_delay = None
         self.output = None
         self.keep_temp_files = False
         self.dry_run = False
@@ -33,6 +34,7 @@ class Options(object):
         self.stop_v_mp4 = False
         self.stop_hint_mp4 = False
         self.stop_a_mp4 = False
+        self.mp4 = 'mp4creator'
 
 def prin(*args, **kwargs):
     fobj = kwargs.pop('fobj', None)
@@ -108,14 +110,28 @@ def command(*cmd, **kwargs):
         return chout
 
 def mp4_add_audio_optimize(mp4, audio, **kwargs):
-    command('mp4creator', '-c', audio, '-interleave', '-optimize', mp4
-        , **kwargs)
+    if g_opts.mp4 == 'mp4creator':
+        command('mp4creator', '-c', audio, '-interleave', '-optimize', mp4
+            , **kwargs)
+    elif g_opts.mp4 == 'mp4box':
+        delay = kwargs.pop('delay', None)
+        if delay is not None:
+            delay = ':delay='+delay
+        else:
+            delay = ''
+        command('MP4Box', '-add', audio+'#audio:trackID=2'+delay, mp4, **kwargs)
 
 def mp4_add_hint(mp4, **kwargs):
-    command('mp4creator', '-hint=1', mp4, **kwargs)
+    if g_opts.mp4 == 'mp4creator':
+        command('mp4creator', '-hint=1', mp4, **kwargs)
+    elif g_opts.mp4 == 'mp4box':
+        pass
 
 def mp4_add_video(mp4, video, fps, **kwargs):
-    command('mp4creator', '-c', video, '-rate', fps, mp4, **kwargs)
+    if g_opts.mp4 == 'mp4creator':
+        command('mp4creator', '-c', video, '-rate', fps, mp4, **kwargs)
+    elif g_opts.mp4 == 'mp4box':
+        command('MP4Box', '-add', video+'#video:trackID=1', '-hint', '-fps', fps, mp4, **kwargs)
 
 def ffmpeg_convert_audio(old, new, **kwargs):
     bitrate = kwargs.pop('bitrate', '128')
@@ -302,6 +318,7 @@ def real_main(mkv, argv0):
 
         exit_if(g_opts.stop_a_mp4)
         mp4_add_audio_optimize(g_opts.output, audio, dry_run=g_opts.dry_run
+            , delay=g_opts.delay
             , verbose=g_opts.verbose)
 
     finally:
@@ -328,7 +345,9 @@ def main(argv=None):
         opts, args = getopt.gnu_getopt(argv[1:]
             , 'hvo:n'
             , ['help', 'usage', 'version', 'verbose'
-                , 'audio-bitrate=', 'audio-channels=', 'audio-codec='
+                , 'use-mp4box', 'use-mp4creator'
+                , 'audio-delay-ms=', 'audio-bitrate=', 'audio-channels='
+                , 'audio-codec='
                 , 'output=', 'keep-temp-files', 'dry-run'
                 , 'correct-profile-only'
                 , 'stop-before-extract-video', 'stop-before-correct-profile'
@@ -348,6 +367,12 @@ def main(argv=None):
             sys.exit(0)
         elif opt in ('-v', '--verbose'):
             g_opts.verbose = g_opts.verbose + 1
+        elif opt == '--use-mp4creator':
+            g_opts.mp4 = 'mp4creator'
+        elif opt == '--use-mp4box':
+            g_opts.mp4 = 'mp4box'
+        elif opt == '--audio-delay-ms':
+            g_opts.a_delay = optarg
         elif opt == '--audio-bitrate':
             g_opts.a_bitrate = optarg
         elif opt == '--audio-channels':
@@ -383,6 +408,8 @@ def main(argv=None):
         die(usage_io.getvalue(), end='')
     elif len(args) > 1:
         usage_print(fobj=sys.stderr)
+    if g_opts.a_delay is not None and g_opts.mp4 == 'mp4creator':
+        die("Cannot use --audio-delay-ms with mp4creator. Try --use-mp4box")
 
     mkv = args[0]
 

@@ -11,13 +11,13 @@ SYNOPSIS
        mkvtomp4 --correct-profile-only [--] <rawh264file>
 
 DESCRIPTION
-       Uses mpeg4ip or GPACs MP4Box, mkvtoolnix and ffmpeg to convert
+       Uses mpeg4ip or GPAC’s MP4Box, mkvtoolnix and ffmpeg to convert
        troublesome mkv files to mp4. The conversion does not re-encode the
-       video and only re-encodes the audio if it doesnt use AAC codec (one
+       video and only re-encodes the audio if it doesn’t use AAC codec (one
        can override this behaviour using --audio-codec). They will be playable
        on the Sony PS3.
 
-       We depend on: mkvtoolnix, mpeg4ip or GPACs MP4Box for the conversion.
+       We depend on: mkvtoolnix, mpeg4ip or GPAC’s MP4Box for the conversion.
        ffmpeg is optional but required for audio transcoding.
 
 OPTIONS
@@ -47,7 +47,7 @@ OPTIONS
            Keep all temporary files created while converting.
 
        -n, --dry-run
-           Dont run any commands, but print them in a shellquoted format that
+           Don’t run any commands, but print them in a shellquoted format that
            can be safely copy-pasted by the user.
 
        --stop-before-extract-video

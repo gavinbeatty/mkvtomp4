@@ -318,7 +318,7 @@ def real_main(mkv, argv0):
 
         exit_if(g_opts.stop_a_mp4)
         mp4_add_audio_optimize(g_opts.output, audio, dry_run=g_opts.dry_run
-            , delay=g_opts.delay
+            , delay=g_opts.a_delay
             , verbose=g_opts.verbose)
 
     finally:

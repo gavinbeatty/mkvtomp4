@@ -220,7 +220,7 @@ class MkvInfo(object):
                 '\d+\.\d+ms \((\d+\.\d+) fps for a video track\)$')
 
         self.track = {'audio': None, 'video':None}
-        infolines = command('mkvinfo', mkv).split('\n')
+        infolines = command('mkvinfo', mkv, env={'LC_ALL':'C'}).split('\n')
 
         in_track_number = None
         in_track_type = None

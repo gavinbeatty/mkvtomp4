@@ -61,3 +61,8 @@ upload-html: doc/$(PROJECT).1.html
 	$(RSYNC) -av --chmod u=rw,g=r,o=r doc/$(PROJECT).1.html stokes:~/www/
 .PHONY: upload-html
 
+pep8:
+	pep8 mkvtomp4.py
+pyflakes:
+	pyflakes mkvtomp4.py
+.PHONY: pep8 pyflakes

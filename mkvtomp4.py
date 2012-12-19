@@ -53,6 +53,8 @@ def wprint(*args, **kwargs):
 
 
 _verbosity = 0
+
+
 def vprint(level, *args, **kwargs):
     global _verbosity
     local = kwargs.get('verbosity', 0)
@@ -87,7 +89,9 @@ def command(cmd, **kwargs):
         vprint(1, 'command: Popen kwargs: %s' % str(kwargs), **verbose_kwargs)
     try:
         vprint(1, 'command: %s' % str(cmd), **verbose_kwargs)
-        proc = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE, close_fds=True, **kwargs)
+        proc = sp.Popen(
+            cmd, stdout=sp.PIPE, stderr=sp.PIPE, close_fds=True, **kwargs
+        )
     except OSError, e:
         die('command failed:', str(e), ':', sq(cmd))
     chout, cherr = proc.communicate()
@@ -122,8 +126,9 @@ class MkvInfo(object):
             self.codec_re = re.compile(r'^\|  \+ Codec ID: (.*)$')
             self.a_codec_re = re.compile(r'^(A_)?(DTS|AAC|AC3)$')
             self.v_codec_re = re.compile(r'^(V_)?(MPEG4/ISO/AVC)$')
-            self.fps_re = re.compile(r'^\|  \+ Default duration: '
-                '\d+\.\d+ms \((\d+\.\d+) fps for a video track\)$')
+            self.fps_re = re.compile(
+                r'^\|  \+ Default duration: \d+\.\d+ms \((\d+\.\d+)'
+                ' fps for a video track\)$')
 
     @classmethod
     def info(cls, mkv):
@@ -131,10 +136,12 @@ class MkvInfo(object):
             cls._impl = cls._Impl()
         i = {}
         i['track'] = {'audio': None, 'video': None}
-        infolines = command(['mkvinfo', mkv], env={'LC_ALL':'C'}).split('\n')
+        i['fullinfo'] = command(
+            ['mkvinfo', mkv], env={'LC_ALL': 'C'}
+        ).split('\n')
         in_track_number = None
         in_track_type = None
-        for line in infolines:
+        for line in i['fullinfo']:
             match = cls._impl.track_no_re.search(line)
             if match is not None:
                 in_track_number = match.group(1)
@@ -153,7 +160,7 @@ class MkvInfo(object):
                 match = cls._impl.codec_re.search(line)
                 if match is not None:
                     codec = match.group(1)
-                    # unrecognized track types shouldn't have codec_match := None
+                    # unknown track types shouldn't have codec_match := None
                     codec_match = None
                     if in_track_type == 'audio':
                         codec_match = cls._impl.a_codec_re.search(codec)
@@ -166,36 +173,34 @@ class MkvInfo(object):
                     if codec_match is not None:
                         key = in_track_type + '_codec'
                         i['track'][key] = codec_match.group(2)
-                        vprint(1, 'MkvInfo: found %s: %s' % (key, i['track'][key]))
+                        vprint(1, 'MkvInfo: found %s: %s'
+                               % (key, i['track'][key]))
             if in_track_type == 'video':
                 match = cls._impl.fps_re.search(line)
                 if match is not None:
                     i['track']['fps'] = match.group(1)
-        if i['track'].get('video', None) is None:
-            die('no video track found')
-        if i['track'].get('audio', None) is None:
-            die('no audio track found')
 
 
 def default_options(argv0):
-    return {'argv0': argv0
-           ,'verbosity': 0
-           ,'a_bitrate': '328'
-           ,'a_channels': '5.1'
-           ,'a_codec': 'libfaac'
-           ,'a_delay': None
-           ,'output': None
-           ,'keep_temp_files': False
-           ,'dry_run': False
-           ,'correct_prof_only': False
-           ,'stop_v_ex': False
-           ,'stop_correct': False
-           ,'stop_a_ex': False
-           ,'stop_a_conv': False
-           ,'stop_v_mp4': False
-           ,'stop_hint_mp4': False
-           ,'stop_a_mp4': False
-           ,'mp4': 'mp4creator'
+    return {
+        'argv0': argv0,
+        'verbosity': 0,
+        'a_bitrate': '328',
+        'a_channels': '5.1',
+        'a_codec': 'libfaac',
+        'a_delay': None,
+        'output': None,
+        'keep_temp_files': False,
+        'dry_run': False,
+        'correct_prof_only': False,
+        'stop_v_ex': False,
+        'stop_correct': False,
+        'stop_a_ex': False,
+        'stop_a_conv': False,
+        'stop_v_mp4': False,
+        'stop_hint_mp4': False,
+        'stop_a_mp4': False,
+        'mp4': 'mp4creator',
     }
 
 
@@ -205,10 +210,10 @@ def mp4_add_audio_optimize_cmd(mp4, audio, **kwargs):
     elif kwargs['mp4'] == 'mp4box':
         delay = kwargs.get('delay', None)
         if delay is not None:
-            delay = ':delay='+delay
+            delay = ':delay=' + delay
         else:
             delay = ''
-        return ['MP4Box', '-add', audio+'#audio:trackID=2'+delay, mp4]
+        return ['MP4Box', '-add', audio + '#audio:trackID=2' + delay, mp4]
 
 
 def mp4_add_hint_cmd(mp4, **kwargs):
@@ -222,7 +227,10 @@ def mp4_add_video_cmd(mp4, video, fps, **kwargs):
     if kwargs['mp4'] == 'mp4creator':
         return ['mp4creator', '-c', video, '-rate', fps, mp4]
     elif kwargs['mp4'] == 'mp4box':
-        return ['MP4Box', '-add', video+'#video:trackID=1', '-hint', '-fps', fps, mp4]
+        return [
+            'MP4Box', '-add',
+            video + '#video:trackID=1', '-hint', '-fps', fps, mp4,
+        ]
 
 
 def ffmpeg_convert_audio_cmd(old, new, **kwargs):
@@ -236,8 +244,9 @@ def ffmpeg_convert_audio_cmd(old, new, **kwargs):
         cmd = ['ffmpeg', '-v', str(verbosity - 1)]
     else:
         cmd = ['ffmpeg']
-    return cmd + ['-i', old, '-ac', str(channels), '-acodec', codec
-                 ,'-ab', str(bitrate) + 'k', new
+    return cmd + [
+        '-i', old, '-ac', str(channels), '-acodec', codec,
+        '-ab', str(bitrate) + 'k', new
     ]
 
 
@@ -264,8 +273,7 @@ def dry_correct_rawmp4_profile(rawmp4, **opts):
 
 
 def mkv_extract_track_cmd(mkv, out, track, verbosely=False):
-    v = []
-    if verbosely: v = ['-v']
+    v = ['-v'] if verbosely else []
     return ['mkvextract', 'tracks', mkv] + v + [str(track) + ':' + out]
 
 
@@ -284,36 +292,49 @@ def exit_if(bbool, value=0):
 def real_main(mkv, **opts):
     mkvinfo = MkvInfo.info(mkv)
     mkvtracks = mkvinfo['track']
+    if mkvtracks.get('video', None) is None:
+        die('no video track found in info:\n' + mkvinfo['fullinfo'])
+    if mkvtracks.get('audio', None) is None:
+        die('no audio track found in info:\n' + mkvinfo['fullinfo'])
     tempfiles = []
     try:
         # Extract video
-        video = mkv+'.h264'
+        video = mkv + '.h264'
         exit_if(opts['stop_v_ex'])
-        extract_cmd = mkv_extract_track_cmd(mkv, out=video, track=mkvtracks['video'], verbosely=(opts['verbosity'] > 0))
+        extract_cmd = mkv_extract_track_cmd(
+            mkv, out=video, track=mkvtracks['video'],
+            verbosely=(opts['verbosity'] > 0),
+        )
         tempfiles.append(video)
         dry_command(extract_cmd, **opts)
         exit_if(opts['stop_correct'])
         # Correct profile
         dry_correct_rawmp4_profile(video, **opts)
         a_codec = mkvtracks['audio_codec']
-        audio = mkv+'.'+a_codec.lower()
+        audio = mkv + '.' + a_codec.lower()
         exit_if(opts['stop_a_ex'])
         # Extract audio
-        extract_cmd = mkv_extract_track_cmd(mkv, out=audio, track=mkvtracks['audio'], verbosely=(opts['verbosity'] > 0))
+        extract_cmd = mkv_extract_track_cmd(
+            mkv, out=audio, track=mkvtracks['audio'],
+            verbosely=(opts['verbosity'] > 0)
+        )
         tempfiles.append(audio)
         dry_command(extract_cmd, **opts)
         exit_if(opts['stop_a_conv'])
         # Convert audio
         if str(a_codec).lower() != 'aac':
-            aacaudio, oldaudio = audio+'.aac', audio
+            aacaudio, oldaudio = audio + '.aac', audio
             audio_cmd = ffmpeg_convert_audio_cmd(oldaudio, aacaudio, **opts)
             tempfiles.append(aacaudio)
             dry_system(audio_cmd, **opts)
         if opts['output'] is None:
-            opts['output'] = os.path.splitext(mkv)[0]+'.mp4'
+            opts['output'] = os.path.splitext(mkv)[0] + '.mp4'
         exit_if(opts['stop_v_mp4'])
         # Create mp4 container with video
-        mp4video_cmd = mp4_add_video_cmd(opts['output'], video, fps=mkvtracks['fps'])
+        mp4video_cmd = mp4_add_video_cmd(
+            opts['output'], video,
+            fps=mkvtracks['fps']
+        )
         dry_command(mp4video_cmd, **opts)
         exit_if(opts['stop_hint_mp4'])
         # Hint mp4 container
@@ -321,7 +342,10 @@ def real_main(mkv, **opts):
         dry_command(mp4hint_cmd, **opts)
         exit_if(opts['stop_a_mp4'])
         # Add audio to mp4 container and optimize
-        mp4opt_cmd = mp4_add_audio_optimize_cmd(opts['output'], aacaudio, **opts)
+        mp4opt_cmd = mp4_add_audio_optimize_cmd(
+            opts['output'], aacaudio,
+            **opts
+        )
         dry_command(mp4opt_cmd, **opts)
     finally:
         if not opts['keep_temp_files']:
@@ -335,19 +359,22 @@ def real_main(mkv, **opts):
 def parseopts(argv=None):
     opts = default_options(argv[0])
     try:
-        options, arguments = getopt.gnu_getopt(argv[1:]
-            , 'hvo:n'
-            , ['help', 'usage', 'version', 'verbose'
-                , 'use-mp4box', 'use-mp4creator'
-                , 'audio-delay-ms=', 'audio-bitrate=', 'audio-channels='
-                , 'audio-codec='
-                , 'output=', 'keep-temp-files', 'dry-run'
-                , 'correct-profile-only'
-                , 'stop-before-extract-video', 'stop-before-correct-profile'
-                , 'stop-before-extract-audio', 'stop-before-convert-audio'
-                , 'stop-before-video-mp4', 'stop-before-hinting-mp4'
-                , 'stop-before-audio-mp4'
-              ])
+        options, arguments = getopt.gnu_getopt(
+            argv[1:],
+            'hvo:n',
+            [
+                'help', 'usage', 'version', 'verbose',
+                'use-mp4box', 'use-mp4creator',
+                'audio-delay-ms=', 'audio-bitrate=', 'audio-channels=',
+                'audio-codec=',
+                'output=', 'keep-temp-files', 'dry-run',
+                'correct-profile-only',
+                'stop-before-extract-video', 'stop-before-correct-profile',
+                'stop-before-extract-audio', 'stop-before-convert-audio',
+                'stop-before-video-mp4', 'stop-before-hinting-mp4',
+                'stop-before-audio-mp4',
+            ]
+        )
     except getopt.GetoptError, err:
         die(str(err))
     for opt, optarg in options:
@@ -415,4 +442,3 @@ def main(argv=None):
 
 if __name__ == "__main__":
     sys.exit(main())
-

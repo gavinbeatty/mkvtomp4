@@ -17,20 +17,17 @@ include dist.mk
 include man2txt.mk
 
 all: bin doc
-bin: setup.py $(PROJECT)
+bin: $(PROJECT)
 doc: doc/$(PROJECT).1 doc/$(PROJECT).1.html doc/$(PROJECT).txt
 clean: clean-bin clean-doc
 .PHONY: all bin doc clean
 
 $(PROJECT): $(PROJECT).py $(VERSION_DEP)
-	$(SED) -e "s/^# @VERSION@/__version__ = '$(VERSION)'/" \
+	$(SED) -e "s/^__version__ = .*/__version__ = '$(VERSION)'/" \
 	$(PROJECT).py > $(PROJECT)
 	@chmod +x $(PROJECT)
-setup.py: setup.py.in
-	$(SED) -e "s/^# @VERSION@/      version='$(VERSION)',/" setup.py.in \
-	> setup.py
 clean-bin:
-	$(RM) $(PROJECT) setup.py
+	$(RM) $(PROJECT)
 install-bin:
 	@echo 'make install-doc to install documentation.'
 	@echo 'To install the script, see README.markdown.'

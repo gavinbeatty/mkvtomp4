@@ -1,5 +1,3 @@
 build
-mkvtomp4-*-doc.zip
-VERSION
-mkvtomp4
-setup.py
+dist
+simplemkv/version.py

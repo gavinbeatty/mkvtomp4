@@ -1,0 +1,14 @@
+MANIFEST
+setup.py
+LICENSE
+README.md
+Makefile
+man2txt.mk
+mkvtomp4.py
+simplemkv/__init__.py
+simplemkv/version.py
+simplemkv/info.py
+simplemkv/tomp4.py
+doc/mkvtomp4.1
+doc/mkvtomp4.1.html
+doc/mkvtomp4.txt

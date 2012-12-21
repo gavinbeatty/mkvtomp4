@@ -1,12 +1,12 @@
-
-"""Convert H.264 mkv files to mp4 files playable on the PS3
-
-Uses mpeg4ip, mkvtoolnix and ffmpeg to convert troublesome mkv files to mp4.
-They will be playable on the Sony PS3.
-"""
-
-from distutils.core import setup
-import mkvtomp4
+import sys
+import os
+import subprocess as sp
+from distutils.core import setup, Command
+from simplemkv.tomp4 import __doc__
+try:
+    from simplemkv.version import __version__
+except ImportError:
+    __version__ = 'unknown'
 
 # A list of classifiers can be found here:
 #   http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -23,9 +23,45 @@ Programming Language :: Python
 Operating System :: OS Independent
 """
 
-from sys import version_info
+def write_version(v):
+    f = open('simplemkv/version.py', 'w')
+    try:
+        f.write('__version__ = %s\n' % repr(v))
+    finally:
+        f.close()
 
-if version_info < (2, 3):
+def git_version():
+    cmd = ['git', 'describe', '--abbrev=4']
+    try:
+        proc = sp.Popen(cmd, stdout=sp.PIPE)
+        stdout = proc.communicate()[0].rstrip('\n')
+    except OSError:
+        sys.stderr.write('git not found: leaving __version__ alone\n')
+        return __version__
+    if proc.returncode != 0:
+        sys.stderr.write('git describe failed: leaving __version__ alone\n')
+        return __version__
+    ver = stdout.lstrip('mkvtomp4-v')
+    write_version(ver)
+    try:
+        proc = sp.Popen(['git', 'update-index', '-q', '--refresh'])
+        proc.communicate()
+    except OSError:
+        return ver
+    if proc.returncode != 0:
+        return ver
+    try:
+        proc = sp.Popen(['git', 'diff-index', '--name-only', 'HEAD', '--'], stdout=sp.PIPE)
+        stdout = proc.communicate()[0]
+    except OSError:
+        sys.stderr.write('git diff-index failed\n')
+    if stdout.strip('\n'):
+        ver = ver + '-dirty'
+        write_version(ver)
+    return ver
+__version__ = git_version()
+
+if sys.version_info < (2, 3):
     _setup = setup
     def setup(**kwargs):
         if kwargs.has_key("classifiers"):
@@ -34,21 +70,23 @@ if version_info < (2, 3):
 
 doclines = __doc__.split("\n")
 
-setup(name='mkvtomp4'
-     ,description=doclines[0]
-     ,long_description="\n".join(doclines[2:])
-     ,author='Gavin Beatty'
-     ,author_email='gavinbeatty@gmail.com'
-     ,maintainer='Gavin Beatty'
-     ,maintainer_email='gavinbeatty@gmail.com'
-     ,license = 'http://opensource.org/licenses/MIT'
-     ,platforms=["any"]
-     ,classifiers=filter(None, classifiers.split("\n"))
-     ,url='http://code.google.com/p/mkvtomp4/'
-     ,version=mkvtomp4.__version__
-     ,scripts=['mkvtomp4']
-#      ,data_files=[('share/doc/mkvtomp4', ['README.md'])
-#        , ('share/man/man1', ['doc/mkvtomp4.1', 'doc/mkvtomp4.1.html'])
-#        ]
-      )
+setup(name='mkvtomp4',
+    description=doclines[0],
+    long_description="\n".join(doclines[2:]),
+    author='Gavin Beatty',
+    author_email='gavinbeatty@gmail.com',
+    maintainer='Gavin Beatty',
+    maintainer_email='gavinbeatty@gmail.com',
+    license = 'http://opensource.org/licenses/MIT',
+    platforms=["any"],
+    classifiers=filter(None, classifiers.split("\n")),
+    url='http://code.google.com/p/mkvtomp4/',
+    version=__version__,
+    scripts=['mkvtomp4.py'],
+    py_modules=['simplemkv.info', 'simplemkv.tomp4'],
+    data_files=[
+        ('share/doc/mkvtomp4', ['README.md', 'doc/mkvtomp4.txt']),
+        ('share/man/man1', ['doc/mkvtomp4.1', 'doc/mkvtomp4.1.html']),
+    ],
+)
 

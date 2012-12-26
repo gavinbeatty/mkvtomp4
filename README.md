@@ -32,3 +32,11 @@ Everything else is written using only fully cross-platform python, except:
 
 If you want to help eliminate this dependency, help solve issue 0001.
 
+
+Install
+-------
+
+Install code and documentation using setup.py in the standard way.
+
+Install only code using codesetup.py.
+

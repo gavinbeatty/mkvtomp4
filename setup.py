@@ -8,6 +8,7 @@ try:
 except ImportError:
     __version__ = 'unknown'
 
+
 # A list of classifiers can be found here:
 #   http://pypi.python.org/pypi?%3Aaction=list_classifiers
 classifiers = """\
@@ -23,12 +24,14 @@ Programming Language :: Python
 Operating System :: OS Independent
 """
 
+
 def write_version(v):
     f = open('simplemkv/version.py', 'w')
     try:
         f.write('__version__ = %s\n' % repr(v))
     finally:
         f.close()
+
 
 def git_version():
     cmd = ['git', 'describe', '--abbrev=4']
@@ -59,7 +62,7 @@ def git_version():
         ver = ver + '-dirty'
         write_version(ver)
     return ver
-__version__ = git_version()
+
 
 if sys.version_info < (2, 3):
     _setup = setup
@@ -68,25 +71,32 @@ if sys.version_info < (2, 3):
             del kwargs["classifiers"]
         _setup(**kwargs)
 
-doclines = __doc__.split("\n")
 
-setup(name='mkvtomp4',
-    description=doclines[0],
-    long_description="\n".join(doclines[2:]),
-    author='Gavin Beatty',
-    author_email='gavinbeatty@gmail.com',
-    maintainer='Gavin Beatty',
-    maintainer_email='gavinbeatty@gmail.com',
-    license = 'http://opensource.org/licenses/MIT',
-    platforms=["any"],
-    classifiers=filter(None, classifiers.split("\n")),
-    url='http://code.google.com/p/mkvtomp4/',
-    version=__version__,
-    scripts=['mkvtomp4.py'],
-    py_modules=['simplemkv.info', 'simplemkv.tomp4'],
-    data_files=[
-        ('share/doc/mkvtomp4', ['README.md', 'doc/mkvtomp4.txt']),
-        ('share/man/man1', ['doc/mkvtomp4.1', 'doc/mkvtomp4.1.html']),
-    ],
-)
+doclines_ = __doc__.split("\n")
+codeopts = {
+    'name': 'mkvtomp4',
+    'description': doclines_[0],
+    'long_description': "\n".join(doclines_[2:]),
+    'author': 'Gavin Beatty',
+    'author_email': 'gavinbeatty@gmail.com',
+    'maintainer': 'Gavin Beatty',
+    'maintainer_email': 'gavinbeatty@gmail.com',
+    'license': 'http://opensource.org/licenses/MIT',
+    'platforms': ["any"],
+    'classifiers': filter(None, classifiers.split("\n")),
+    'url': 'http://code.google.com/p/mkvtomp4/',
+    'version': __version__,
+    'scripts': ['mkvtomp4.py'],
+    'py_modules': ['simplemkv.version', 'simplemkv.info', 'simplemkv.tomp4'],
+}
+fullopts = codeopts.copy()
+fullopts['data_files'] = [
+    ('share/doc/mkvtomp4', ['README.md', 'LICENSE', 'doc/mkvtomp4.txt']),
+    ('share/man/man1', ['doc/mkvtomp4.1', 'doc/mkvtomp4.1.html']),
+]
 
+
+if __name__ == '__main__':
+    __version__ = git_version()
+    fullopts['version'] = __version__
+    setup(**fullopts)

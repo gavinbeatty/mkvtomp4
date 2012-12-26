@@ -85,11 +85,11 @@ def command(cmd, **kwargs):
     verbosity = kwargs.get('verbosity', None)
     if verbosity is not None:
         verbose_kwargs['verbosity'] = verbosity
-    if len(kwargs) != 0:
-        vprint(1, 'command: Popen kwargs: %s' % str(kwargs), **verbose_kwargs)
+    spopts = kwargs.get('spopts', {})
+    vprint(1, 'command: %s' % str(cmd), **verbose_kwargs)
+    if spopts:
+        vprint(1, 'command: options: %s' % str(spopts), **verbose_kwargs)
     try:
-        vprint(1, 'command: %s' % str(cmd), **verbose_kwargs)
-        spopts = kwargs.get('spopts', {})
         proc = sp.Popen(
             cmd, stdout=sp.PIPE, stderr=sp.PIPE, close_fds=True, **spopts
         )
@@ -139,6 +139,7 @@ def default_options(argv0):
         'stop_hint_mp4': False,
         'stop_a_mp4': False,
         'mp4': 'mp4creator',
+        'summary': True,
     }
 
 
@@ -163,11 +164,11 @@ def mp4_add_hint_cmd(mp4file, **opts):
 
 def mp4_add_video_cmd(mp4file, video, fps, **opts):
     if opts['mp4'] == 'mp4creator':
-        return ['mp4creator', '-c', video, '-rate', fps, mp4file]
+        return ['mp4creator', '-c', video, '-rate', str(fps), mp4file]
     elif opts['mp4'] == 'mp4box':
         return [
             'MP4Box', '-add',
-            video + '#video:trackID=1', '-hint', '-fps', fps, mp4file,
+            video + '#video:trackID=1', '-hint', '-fps', str(fps), mp4file,
         ]
 
 
@@ -239,6 +240,7 @@ def real_main(mkvfile, **opts):
     videotrack = get_track('video', re.compile(r'^(?!V_)?MPEG4/ISO/AVC\b'))
     audiotrack = get_track('audio', re.compile(r'^(?!A_)?(?!DTS|AAC|AC3)\b'))
     tempfiles = []
+    succeeded = False
     try:
         # Extract video
         video = mkvfile + '.h264'
@@ -282,7 +284,8 @@ def real_main(mkvfile, **opts):
         exit_if(opts['stop_hint_mp4'])
         # Hint mp4 container
         mp4hint_cmd = mp4_add_hint_cmd(opts['output'], **opts)
-        dry_command(mp4hint_cmd, **opts)
+        if mp4hint_cmd is not None:
+            dry_command(mp4hint_cmd, **opts)
         exit_if(opts['stop_a_mp4'])
         # Add audio to mp4 container and optimize
         mp4opt_cmd = mp4_add_audio_optimize_cmd(
@@ -290,7 +293,11 @@ def real_main(mkvfile, **opts):
             **opts
         )
         dry_command(mp4opt_cmd, **opts)
+        succeeded = True
     finally:
+        if not succeeded:
+            eprint('keeping temp files since we failed.')
+            return
         if opts['dry_run']:
             prin(sq(['rm', '-f'] + tempfiles))
         elif not opts['keep_temp_files']:
@@ -319,6 +326,7 @@ def parseopts(argv=None):
                 'stop-before-extract-audio', 'stop-before-convert-audio',
                 'stop-before-video-mp4', 'stop-before-hinting-mp4',
                 'stop-before-audio-mp4',
+                'no-summary',
             ]
         )
     except getopt.GetoptError, err:
@@ -370,6 +378,8 @@ def parseopts(argv=None):
             opts['stop_hint_mp4'] = True
         elif opt == '--stop-before-audio-mp4':
             opts['stop_a_mp4'] = True
+        elif opt == '--no-summary':
+            opts['summary'] = False
     return opts, arguments
 
 
@@ -384,4 +394,9 @@ def main(argv=None):
     if opts['correct_prof_only']:
         dry_correct_rawmp4_profile(args[0], **opts)
     else:
+        if opts['summary'] and not opts['dry_run']:
+            keep, dry_run = opts['keep_temp_files'], opts['dry_run']
+            opts['keep_temp_files'], opts['dry_run'] = True, True
+            real_main(args[0], **opts)
+            opts['keep_temp_files'], opts['dry_run'] = keep, dry_run
         real_main(args[0], **opts)

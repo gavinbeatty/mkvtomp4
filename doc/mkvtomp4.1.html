@@ -1,756 +1,109 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.5.1" />
-<title>MKVTOMP4(1)</title>
-<style type="text/css">
-/* Debug borders */
-p, li, dt, dd, div, pre, h1, h2, h3, h4, h5, h6 {
-/*
-  border: 1px solid red;
-*/
-}
-
-body {
-  margin: 1em 5% 1em 5%;
-}
-
-a {
-  color: blue;
-  text-decoration: underline;
-}
-a:visited {
-  color: fuchsia;
-}
-
-em {
-  font-style: italic;
-  color: navy;
-}
-
-strong {
-  font-weight: bold;
-  color: #083194;
-}
-
-tt {
-  color: navy;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  color: #527bbd;
-  font-family: sans-serif;
-  margin-top: 1.2em;
-  margin-bottom: 0.5em;
-  line-height: 1.3;
-}
-
-h1, h2, h3 {
-  border-bottom: 2px solid silver;
-}
-h2 {
-  padding-top: 0.5em;
-}
-h3 {
-  float: left;
-}
-h3 + * {
-  clear: left;
-}
-
-div.sectionbody {
-  font-family: serif;
-  margin-left: 0;
-}
-
-hr {
-  border: 1px solid silver;
-}
-
-p {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-}
-
-ul, ol, li > p {
-  margin-top: 0;
-}
-
-pre {
-  padding: 0;
-  margin: 0;
-}
-
-span#author {
-  color: #527bbd;
-  font-family: sans-serif;
-  font-weight: bold;
-  font-size: 1.1em;
-}
-span#email {
-}
-span#revnumber, span#revdate, span#revremark {
-  font-family: sans-serif;
-}
-
-div#footer {
-  font-family: sans-serif;
-  font-size: small;
-  border-top: 2px solid silver;
-  padding-top: 0.5em;
-  margin-top: 4.0em;
-}
-div#footer-text {
-  float: left;
-  padding-bottom: 0.5em;
-}
-div#footer-badges {
-  float: right;
-  padding-bottom: 0.5em;
-}
-
-div#preamble {
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
-}
-div.tableblock, div.imageblock, div.exampleblock, div.verseblock,
-div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
-div.admonitionblock {
-  margin-top: 0.25em;
-  margin-bottom: 1.5em;
-}
-div.admonitionblock {
-  margin-top: 2.5em;
-  margin-bottom: 2.5em;
-}
-
-div.content { /* Block element content. */
-  padding: 0;
-}
-
-/* Block element titles. */
-div.title, caption.title {
-  color: #527bbd;
-  font-family: sans-serif;
-  font-weight: bold;
-  text-align: left;
-  margin-top: 1.0em;
-  margin-bottom: 0.5em;
-}
-div.title + * {
-  margin-top: 0;
-}
-
-td div.title:first-child {
-  margin-top: 0.0em;
-}
-div.content div.title:first-child {
-  margin-top: 0.0em;
-}
-div.content + div.title {
-  margin-top: 0.0em;
-}
-
-div.sidebarblock > div.content {
-  background: #ffffee;
-  border: 1px solid silver;
-  padding: 0.5em;
-}
-
-div.listingblock > div.content {
-  border: 1px solid silver;
-  background: #f4f4f4;
-  padding: 0.5em;
-}
-
-div.quoteblock {
-  padding-left: 2.0em;
-  margin-right: 10%;
-}
-div.quoteblock > div.attribution {
-  padding-top: 0.5em;
-  text-align: right;
-}
-
-div.verseblock {
-  padding-left: 2.0em;
-  margin-right: 10%;
-}
-div.verseblock > div.content {
-  white-space: pre;
-}
-div.verseblock > div.attribution {
-  padding-top: 0.75em;
-  text-align: left;
-}
-/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
-div.verseblock + div.attribution {
-  text-align: left;
-}
-
-div.admonitionblock .icon {
-  vertical-align: top;
-  font-size: 1.1em;
-  font-weight: bold;
-  text-decoration: underline;
-  color: #527bbd;
-  padding-right: 0.5em;
-}
-div.admonitionblock td.content {
-  padding-left: 0.5em;
-  border-left: 2px solid silver;
-}
-
-div.exampleblock > div.content {
-  border-left: 2px solid silver;
-  padding: 0.5em;
-}
-
-div.imageblock div.content { padding-left: 0; }
-span.image img { border-style: none; }
-a.image:visited { color: white; }
-
-dl {
-  margin-top: 0.8em;
-  margin-bottom: 0.8em;
-}
-dt {
-  margin-top: 0.5em;
-  margin-bottom: 0;
-  font-style: normal;
-  color: navy;
-}
-dd > *:first-child {
-  margin-top: 0.1em;
-}
-
-ul, ol {
-    list-style-position: outside;
-}
-ol.arabic {
-  list-style-type: decimal;
-}
-ol.loweralpha {
-  list-style-type: lower-alpha;
-}
-ol.upperalpha {
-  list-style-type: upper-alpha;
-}
-ol.lowerroman {
-  list-style-type: lower-roman;
-}
-ol.upperroman {
-  list-style-type: upper-roman;
-}
-
-div.compact ul, div.compact ol,
-div.compact p, div.compact p,
-div.compact div, div.compact div {
-  margin-top: 0.1em;
-  margin-bottom: 0.1em;
-}
-
-div.tableblock > table {
-  border: 3px solid #527bbd;
-}
-thead {
-  font-family: sans-serif;
-  font-weight: bold;
-}
-tfoot {
-  font-weight: bold;
-}
-td > div.verse {
-  white-space: pre;
-}
-p.table {
-  margin-top: 0;
-}
-/* Because the table frame attribute is overriden by CSS in most browsers. */
-div.tableblock > table[frame="void"] {
-  border-style: none;
-}
-div.tableblock > table[frame="hsides"] {
-  border-left-style: none;
-  border-right-style: none;
-}
-div.tableblock > table[frame="vsides"] {
-  border-top-style: none;
-  border-bottom-style: none;
-}
-
-
-div.hdlist {
-  margin-top: 0.8em;
-  margin-bottom: 0.8em;
-}
-div.hdlist tr {
-  padding-bottom: 15px;
-}
-dt.hdlist1.strong, td.hdlist1.strong {
-  font-weight: bold;
-}
-td.hdlist1 {
-  vertical-align: top;
-  font-style: normal;
-  padding-right: 0.8em;
-  color: navy;
-}
-td.hdlist2 {
-  vertical-align: top;
-}
-div.hdlist.compact tr {
-  margin: 0;
-  padding-bottom: 0;
-}
-
-.comment {
-  background: yellow;
-}
-
-.footnote, .footnoteref {
-  font-size: 0.8em;
-}
-
-span.footnote, span.footnoteref {
-  vertical-align: super;
-}
-
-#footnotes {
-  margin: 20px 0 20px 0;
-  padding: 7px 0 0 0;
-}
-
-#footnotes div.footnote {
-  margin: 0 0 5px 0;
-}
-
-#footnotes hr {
-  border: none;
-  border-top: 1px solid silver;
-  height: 1px;
-  text-align: left;
-  margin-left: 0;
-  width: 20%;
-  min-width: 100px;
-}
-
-
-@media print {
-  div#footer-badges { display: none; }
-}
-
-div#toctitle {
-  color: #527bbd;
-  font-family: sans-serif;
-  font-size: 1.1em;
-  font-weight: bold;
-  margin-top: 1.0em;
-  margin-bottom: 0.1em;
-}
-
-div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-div.toclevel2 {
-  margin-left: 2em;
-  font-size: 0.9em;
-}
-div.toclevel3 {
-  margin-left: 4em;
-  font-size: 0.9em;
-}
-div.toclevel4 {
-  margin-left: 6em;
-  font-size: 0.9em;
-}
-/* Workarounds for IE6's broken and incomplete CSS2. */
-
-div.sidebar-content {
-  background: #ffffee;
-  border: 1px solid silver;
-  padding: 0.5em;
-}
-div.sidebar-title, div.image-title {
-  color: #527bbd;
-  font-family: sans-serif;
-  font-weight: bold;
-  margin-top: 0.0em;
-  margin-bottom: 0.5em;
-}
-
-div.listingblock div.content {
-  border: 1px solid silver;
-  background: #f4f4f4;
-  padding: 0.5em;
-}
-
-div.quoteblock-attribution {
-  padding-top: 0.5em;
-  text-align: right;
-}
-
-div.verseblock-content {
-  white-space: pre;
-}
-div.verseblock-attribution {
-  padding-top: 0.75em;
-  text-align: left;
-}
-
-div.exampleblock-content {
-  border-left: 2px solid silver;
-  padding-left: 0.5em;
-}
-
-/* IE6 sets dynamically generated links as visited. */
-div#toc a:visited { color: blue; }
-</style>
-<script type="text/javascript">
-/*<![CDATA[*/
-window.onload = function(){asciidoc.footnotes();}
-var asciidoc = {  // Namespace.
-
-/////////////////////////////////////////////////////////////////////
-// Table Of Contents generator
-/////////////////////////////////////////////////////////////////////
-
-/* Author: Mihai Bazon, September 2002
- * http://students.infoiasi.ro/~mishoo
- *
- * Table Of Content generator
- * Version: 0.4
- *
- * Feel free to use this script under the terms of the GNU General Public
- * License, as long as you do not remove or alter this notice.
- */
-
- /* modified by Troy D. Hanson, September 2006. License: GPL */
- /* modified by Stuart Rackham, 2006, 2009. License: GPL */
-
-// toclevels = 1..4.
-toc: function (toclevels) {
-
-  function getText(el) {
-    var text = "";
-    for (var i = el.firstChild; i != null; i = i.nextSibling) {
-      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
-        text += i.data;
-      else if (i.firstChild != null)
-        text += getText(i);
-    }
-    return text;
-  }
-
-  function TocEntry(el, text, toclevel) {
-    this.element = el;
-    this.text = text;
-    this.toclevel = toclevel;
-  }
-
-  function tocEntries(el, toclevels) {
-    var result = new Array;
-    var re = new RegExp('[hH]([2-'+(toclevels+1)+'])');
-    // Function that scans the DOM tree for header elements (the DOM2
-    // nodeIterator API would be a better technique but not supported by all
-    // browsers).
-    var iterate = function (el) {
-      for (var i = el.firstChild; i != null; i = i.nextSibling) {
-        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
-          var mo = re.exec(i.tagName);
-          if (mo)
-            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
-          iterate(i);
-        }
-      }
-    }
-    iterate(el);
-    return result;
-  }
-
-  var toc = document.getElementById("toc");
-  var entries = tocEntries(document.getElementById("content"), toclevels);
-  for (var i = 0; i < entries.length; ++i) {
-    var entry = entries[i];
-    if (entry.element.id == "")
-      entry.element.id = "_toc_" + i;
-    var a = document.createElement("a");
-    a.href = "#" + entry.element.id;
-    a.appendChild(document.createTextNode(entry.text));
-    var div = document.createElement("div");
-    div.appendChild(a);
-    div.className = "toclevel" + entry.toclevel;
-    toc.appendChild(div);
-  }
-  if (entries.length == 0)
-    toc.parentNode.removeChild(toc);
-},
-
-
-/////////////////////////////////////////////////////////////////////
-// Footnotes generator
-/////////////////////////////////////////////////////////////////////
-
-/* Based on footnote generation code from:
- * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
- */
-
-footnotes: function () {
-  var cont = document.getElementById("content");
-  var noteholder = document.getElementById("footnotes");
-  var spans = cont.getElementsByTagName("span");
-  var refs = {};
-  var n = 0;
-  for (i=0; i<spans.length; i++) {
-    if (spans[i].className == "footnote") {
-      n++;
-      // Use [\s\S] in place of . so multi-line matches work.
-      // Because JavaScript has no s (dotall) regex flag.
-      note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
-      noteholder.innerHTML +=
-        "<div class='footnote' id='_footnote_" + n + "'>" +
-        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
-        n + "</a>. " + note + "</div>";
-      spans[i].innerHTML =
-        "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
-        "' title='View footnote' class='footnote'>" + n + "</a>]";
-      var id =spans[i].getAttribute("id");
-      if (id != null) refs["#"+id] = n;
-    }
-  }
-  if (n == 0)
-    noteholder.parentNode.removeChild(noteholder);
-  else {
-    // Process footnoterefs.
-    for (i=0; i<spans.length; i++) {
-      if (spans[i].className == "footnoteref") {
-        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
-        href = href.match(/#.*/)[0];  // Because IE return full URL.
-        n = refs[href];
-        spans[i].innerHTML =
-          "[<a href='#_footnote_" + n +
-          "' title='View footnote' class='footnote'>" + n + "</a>]";
-      }
-    }
-  }
-}
-
-}
-/*]]>*/
-</script>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Gavin Beatty" />
+  <meta name="date" content="2012-12-26" />
+  <title>MKVTOMP4(1)</title>
 </head>
 <body>
 <div id="header">
-<h1>MKVTOMP4(1)</h1>
+<h1 class="title">MKVTOMP4(1)</h1>
+<h2 class="author">Gavin Beatty</h2>
+<h3 class="date">December 26, 2012</h3>
 </div>
-<div id="content">
-<h2 id="_name">NAME</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>mkvtomp4 - convert H.264 mkv files to mp4 files playable on the PS3</p></div>
-</div>
-<h2 id="_synopsis">SYNOPSIS</h2>
-<div class="sectionbody">
-<div class="paragraph"><p><strong>mkvtomp4</strong> [<em>OPTIONS</em>] [--] <em>&lt;mkvfile&gt;</em></p></div>
-<div class="paragraph"><p><strong>mkvtomp4</strong> <strong>--correct-profile-only</strong> [--] <em>&lt;rawh264file&gt;</em></p></div>
-</div>
-<h2 id="_description">DESCRIPTION</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Uses mpeg4ip or GPAC&#8217;s MP4Box, mkvtoolnix and ffmpeg to convert troublesome
-mkv files to mp4.
-The conversion does not re-encode the video and only re-encodes the audio if
-it doesn&#8217;t use AAC codec (one can override this behaviour using
-<strong>--audio-codec</strong>).
-They will be playable on the Sony PS3.</p></div>
-<div class="paragraph"><p>We depend on: <strong>mkvtoolnix</strong>, <strong>mpeg4ip</strong> or GPAC&#8217;s <strong>MP4Box</strong> for the conversion.
-<strong>ffmpeg</strong> is optional but required for audio transcoding.</p></div>
-</div>
-<h2 id="_options">OPTIONS</h2>
-<div class="sectionbody">
-<div class="dlist"><dl>
-<dt class="hdlist1">
-<strong>--use-mp4creator</strong> or <strong>--use-mp4box</strong>
-</dt>
-<dd>
-<p>
-    Specify which mp4 backend to use. mp4creator is the default.
-</p>
+<h1 id="name">NAME</h1>
+<p>mkvtomp4 - convert H.264 mkv files to mp4 files playable on the PS3</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><em>mkvtomp4</em> [<em>OPTIONS</em>] [--] <em>&lt;mkvfile&gt;</em></p>
+<p><em>mkvtomp4</em> <em>--correct-profile-only</em> [--] <em>&lt;rawh264file&gt;</em></p>
+<h1 id="description">DESCRIPTION</h1>
+<p>Uses mpeg4ip or GPAC's MP4Box, mkvtoolnix and ffmpeg to convert troublesome mkv files to mp4. The conversion does not re-encode the video and only re-encodes the audio if it doesn't use AAC codec (one can override this behaviour using <code>--audio-codec</code>). They will be playable on the Sony PS3.</p>
+<p>We depend on: <em>mkvtoolnix</em>, <em>mpeg4ip</em> or GPAC's <em>MP4Box</em> for the conversion. <em>ffmpeg</em> is optional but required for audio transcoding.</p>
+<h1 id="options">OPTIONS</h1>
+<dl>
+<dt>--use-mp4creator, --use-mp4box</dt>
+<dd><p>Specify which mp4 backend to use. mp4creator is the default.</p>
 </dd>
-<dt class="hdlist1">
-<strong>--audio-delay-ms</strong>=<em>&lt;delay_ms&gt;</em>
-</dt>
-<dd>
-<p>
-    When importing the audio track, delay by <em>&lt;delay_ms&gt;</em> milliseconds.
-    e.g., <strong>--audio-delay-ms</strong>=<em>1000</em> delays by 1 second.
-    Not supported by mp4creator.
-</p>
+<dt>--audio-delay-ms=<em><delay_ms></em></dt>
+<dd><p>When importing the audio track, delay by <code>\&lt;delay_ms&gt;</code> milliseconds. e.g., <code>--audio-delay-ms</code>=<code>1000</code> delays by 1 second. Not supported by mp4creator.</p>
 </dd>
-<dt class="hdlist1">
-<strong>--audio-bitrate</strong>=<em>&lt;bitrate&gt;</em>
-</dt>
-<dd>
-<p>
-    If/When converting audio, use the given bitrate. e.g., <em>128</em>.
-</p>
+<dt>--audio-bitrate=<em>&lt;bitrate&gt;</em></dt>
+<dd><p>If/When converting audio, use the given bitrate. e.g., <code>128</code>.</p>
 </dd>
-<dt class="hdlist1">
-<strong>--audio-channels</strong>=<em>&lt;channels&gt;</em>
-</dt>
-<dd>
-<p>
-    If/When converting audio, use <em>&lt;channels&gt;</em> channels in the output. e.g., <em>5.1</em>.
-</p>
+<dt>--audio-channels=<em>&lt;channels&gt;</em></dt>
+<dd><p>If/When converting audio, use <code>\&lt;channels&gt;</code> channels in the output. e.g., <code>5.1</code>.</p>
 </dd>
-<dt class="hdlist1">
-<strong>--audio-codec</strong>=<em>&lt;codec&gt;</em>
-</dt>
-<dd>
-<p>
-    If/When converting audio, convert to <em>&lt;codec&gt;</em>. Default is <em>libfaac</em>. This
-    should be something supported by <strong>ffmpeg</strong>.
-</p>
+<dt>--audio-codec=<em>&lt;codec&gt;</em></dt>
+<dd><p>If/When converting audio, convert to <code>\&lt;codec&gt;</code>. Default is <code>libfaac</code>. This should be something supported by <em>ffmpeg</em>.</p>
 </dd>
-<dt class="hdlist1">
-<strong>-o, --output</strong>=<em>&lt;outfile&gt;</em>
-</dt>
-<dd>
-<p>
-    Put the completed mp4 into <em>&lt;outfile&gt;</em>.
-</p>
+<dt>-o, --output=<em>&lt;outfile&gt;</em></dt>
+<dd><p>Put the completed mp4 into <code>\&lt;outfile&gt;</code>.</p>
 </dd>
-<dt class="hdlist1">
-<strong>--keep-temp-files</strong>
-</dt>
-<dd>
-<p>
-    Keep all temporary files created while converting.
-</p>
+<dt>--keep-temp-files</dt>
+<dd><p>Keep all temporary files created while converting.</p>
 </dd>
-<dt class="hdlist1">
-<strong>-n, --dry-run</strong>
-</dt>
-<dd>
-<p>
-    Don&#8217;t run any commands, but print them in a shellquoted format that can be
-    safely copy-pasted by the user.
-</p>
+<dt>-n, --dry-run</dt>
+<dd><p>Don't run any commands, but print them in a shellquoted format that can be safely copy-pasted by the user.</p>
 </dd>
-<dt class="hdlist1">
-<strong>--stop-before-extract-video</strong>
-</dt>
-<dd>
-<p>
-    Exit before extracting video from <em>&lt;mkvfile&gt;</em>.
-</p>
+<dt>--stop-before-extract-video</dt>
+<dd><p>Exit before extracting video from <code>\&lt;mkvfile&gt;</code>.</p>
 </dd>
-<dt class="hdlist1">
-<strong>--stop-before-correct-profile</strong>
-</dt>
-<dd>
-<p>
-    Exit before correcting profile of raw H.264 stream.
-</p>
+<dt>--stop-before-correct-profile</dt>
+<dd><p>Exit before correcting profile of raw H.264 stream.</p>
 </dd>
-<dt class="hdlist1">
-<strong>--stop-before-extract-audio</strong>
-</dt>
-<dd>
-<p>
-    Exit before extracting audio from <em>&lt;mkvfile&gt;</em>.
-</p>
+<dt>--stop-before-extract-audio</dt>
+<dd><p>Exit before extracting audio from <code>\&lt;mkvfile&gt;</code>.</p>
 </dd>
-<dt class="hdlist1">
-<strong>--stop-before-convert-audio</strong>
-</dt>
-<dd>
-<p>
-    Exit before converting audio previously extracted. This will stop even if
-    the audio does not need to be converted.
-</p>
+<dt>--stop-before-convert-audio</dt>
+<dd><p>Exit before converting audio previously extracted. This will stop even if the audio does not need to be converted.</p>
 </dd>
-<dt class="hdlist1">
-<strong>--stop-before-video-mp4</strong>
-</dt>
-<dd>
-<p>
-    Exit before adding the extracted video to the mp4 container.
-</p>
+<dt>--stop-before-video-mp4</dt>
+<dd><p>Exit before adding the extracted video to the mp4 container.</p>
 </dd>
-<dt class="hdlist1">
-<strong>--stop-before-hinting-mp4</strong>
-</dt>
-<dd>
-<p>
-    Exit before hinting the mp4 file with the video track.
-</p>
+<dt>--stop-before-hinting-mp4</dt>
+<dd><p>Exit before hinting the mp4 file with the video track.</p>
 </dd>
-<dt class="hdlist1">
-<strong>--stop-before-audio-mp4</strong>
-</dt>
-<dd>
-<p>
-    Exit before adding the extracted (and possibly converted) audio to the mp4
-    container.
-</p>
+<dt>--stop-before-audio-mp4</dt>
+<dd><p>Exit before adding the extracted (and possibly converted) audio to the mp4 container.</p>
 </dd>
-<dt class="hdlist1">
-<tt>&lt;mkvfile&gt;</tt>
-</dt>
-<dd>
-<p>
-    The Matroska (.mkv) file you wish to convert.
-</p>
+<dt><code>\&lt;mkvfile&gt;</code></dt>
+<dd><p>The Matroska (.mkv) file you wish to convert.</p>
 </dd>
-<dt class="hdlist1">
-<strong>--correct-profile-only</strong>
-</dt>
-<dd>
-<p>
-    Only correct the profile
-</p>
+<dt>--correct-profile-only</dt>
+<dd><p>Only correct the profile</p>
 </dd>
-<dt class="hdlist1">
-<tt>&lt;rawh264file&gt;</tt>
-</dt>
-<dd>
-<p>
-    The raw H.264 stream file that will have its profile corrected for use on
-    the PS3.
-</p>
+<dt><code>\&lt;rawh264file&gt;</code></dt>
+<dd><p>The raw H.264 stream file that will have its profile corrected for use on the PS3.</p>
 </dd>
-</dl></div>
-</div>
-<h2 id="_exit_status">EXIT STATUS</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>0 on success and non-zero on failure.</p></div>
-</div>
-<h2 id="_author">AUTHOR</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Gavin Beatty &lt;<a href="mailto:gavinbeatty@gmail.com">gavinbeatty@gmail.com</a>&gt;</p></div>
-</div>
-<h2 id="_resources">RESOURCES</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Website: <a href="http://code.google.com/p/mkvtomp4/">http://code.google.com/p/mkvtomp4/</a></p></div>
-</div>
-<h2 id="_reporting_bugs">REPORTING BUGS</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Please report all bugs and wishes to &lt;<a href="mailto:gavinbeatty@gmail.com">gavinbeatty@gmail.com</a>&gt;</p></div>
-</div>
-<h2 id="_copying">COPYING</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>mkvtomp4 Copyright (C) 2010 Gavin Beatty, &lt;<a href="mailto:gavinbeatty@gmail.com">gavinbeatty@gmail.com</a>&gt;</p></div>
-<div class="paragraph"><p>Free use of this software is granted under the terms of the GNU General Public
-License version 3, or at your option, any later version. (GPLv3+)</p></div>
-</div>
-</div>
-<div id="footnotes"><hr /></div>
-<div id="footer">
-<div id="footer-text">
-Last updated 2010-02-27 00:12:20 CEST
-</div>
-</div>
+</dl>
+<h1 id="author">AUTHOR</h1>
+<p>Gavin Beatty <script type="text/javascript">
+<!--
+h='&#x67;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;';a='&#64;';n='&#x67;&#x61;&#118;&#x69;&#110;&#98;&#x65;&#x61;&#116;&#116;&#x79;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x67;&#x61;&#118;&#x69;&#110;&#98;&#x65;&#x61;&#116;&#116;&#x79;&#32;&#x61;&#116;&#32;&#x67;&#x6d;&#x61;&#x69;&#108;&#32;&#100;&#x6f;&#116;&#32;&#x63;&#x6f;&#x6d;</noscript></p>
+<h1 id="resources">RESOURCES</h1>
+<p>Website: <a href="http://code.google.com/p/mkvtomp4/"><code class="url">http://code.google.com/p/mkvtomp4/</code></a></p>
+<h1 id="reporting-bugs">REPORTING BUGS</h1>
+<p>Please report all bugs and wishes to <script type="text/javascript">
+<!--
+h='&#x67;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;';a='&#64;';n='&#x67;&#x61;&#118;&#x69;&#110;&#98;&#x65;&#x61;&#116;&#116;&#x79;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x67;&#x61;&#118;&#x69;&#110;&#98;&#x65;&#x61;&#116;&#116;&#x79;&#32;&#x61;&#116;&#32;&#x67;&#x6d;&#x61;&#x69;&#108;&#32;&#100;&#x6f;&#116;&#32;&#x63;&#x6f;&#x6d;</noscript></p>
+<h1 id="copying">COPYING</h1>
+<p>mkvtomp4 Copyright (c) 2012 Gavin Beatty, <script type="text/javascript">
+<!--
+h='&#x67;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;';a='&#64;';n='&#x67;&#x61;&#118;&#x69;&#110;&#98;&#x65;&#x61;&#116;&#116;&#x79;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x67;&#x61;&#118;&#x69;&#110;&#98;&#x65;&#x61;&#116;&#116;&#x79;&#32;&#x61;&#116;&#32;&#x67;&#x6d;&#x61;&#x69;&#108;&#32;&#100;&#x6f;&#116;&#32;&#x63;&#x6f;&#x6d;</noscript></p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 </body>
 </html>

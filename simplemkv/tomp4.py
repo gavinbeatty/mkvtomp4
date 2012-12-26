@@ -139,35 +139,46 @@ def default_options(argv0):
         'stop_hint_mp4': False,
         'stop_a_mp4': False,
         'mp4': 'mp4creator',
+        'mp4creator': 'mp4creator',
+        'mp4box': 'MP4Box',
         'summary': True,
     }
 
 
 def mp4_add_audio_optimize_cmd(mp4file, audio, **opts):
     if opts['mp4'] == 'mp4creator':
-        return ['mp4creator', '-c', audio, '-interleave', '-optimize', mp4file]
+        return [
+            opts.get('mp4creator', 'mp4creator'),
+            '-c', audio, '-interleave', '-optimize', mp4file
+        ]
     elif opts['mp4'] == 'mp4box':
         delay = opts.get('delay', None)
         if delay is not None:
             delay = ':delay=' + delay
         else:
             delay = ''
-        return ['MP4Box', '-add', audio + '#audio:trackID=2' + delay, mp4file]
+        return [
+            opts.get('mp4box', 'MP4Box'),
+            '-add', audio + '#audio:trackID=2' + delay, mp4file
+        ]
 
 
 def mp4_add_hint_cmd(mp4file, **opts):
     if opts['mp4'] == 'mp4creator':
-        return ['mp4creator', '-hint=1', mp4file]
+        return [opts.get('mp4creator', 'mp4creator'), '-hint=1', mp4file]
     elif opts['mp4'] == 'mp4box':
         return None
 
 
 def mp4_add_video_cmd(mp4file, video, fps, **opts):
     if opts['mp4'] == 'mp4creator':
-        return ['mp4creator', '-c', video, '-rate', str(fps), mp4file]
+        return [
+            opts.get('mp4creator', 'mp4creator'),
+            '-c', video, '-rate', str(fps), mp4file
+        ]
     elif opts['mp4'] == 'mp4box':
         return [
-            'MP4Box', '-add',
+            opts.get('mp4box', 'MP4Box'), '-add',
             video + '#video:trackID=1', '-hint', '-fps', str(fps), mp4file,
         ]
 
@@ -316,6 +327,7 @@ def parseopts(argv=None):
             'hvo:n',
             [
                 'help', 'usage', 'version', 'verbose',
+                'mp4box=', 'mp4creator=',
                 'use-mp4box', 'use-mp4creator',
                 'video-track=', 'audio-track=',
                 'audio-delay-ms=', 'audio-bitrate=', 'audio-channels=',
@@ -340,6 +352,10 @@ def parseopts(argv=None):
             sys.exit(0)
         elif opt in ('-v', '--verbose'):
             opts['verbosity'] = opts['verbosity'] + 1
+        elif opt == '--mp4creator':
+            opts['mp4creator'] = optarg
+        elif opt == '--mp4box':
+            opts['mp4box'] = optarg
         elif opt == '--use-mp4creator':
             opts['mp4'] = 'mp4creator'
         elif opt == '--use-mp4box':

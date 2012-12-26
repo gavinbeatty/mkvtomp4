@@ -32,7 +32,13 @@ We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
 \--use-mp4creator, \--use-mp4box
 :   Specify which mp4 backend to use. mp4creator is the default.
 
-\--audio-delay-ms=*<delay_ms>*
+\--mp4creator=*\<mp4creator>
+:   Specific the command/path to execute *mp4creator*.
+
+\--mp4box=*\<mp4box>
+:   Specific the command/path to execute *MP4Box*.
+
+\--audio-delay-ms=*\<delay_ms>*
 :   When importing the audio track, delay by `\<delay_ms>` milliseconds.
     e.g., `--audio-delay-ms`=`1000` delays by 1 second.
     Not supported by mp4creator.

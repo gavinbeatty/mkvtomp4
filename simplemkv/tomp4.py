@@ -17,11 +17,19 @@ import pipes
 
 import simplemkv.info
 
-usage = 'usage: mkvtomp4 [options] [--] <file>'
+simple_usage = 'usage: mkvtomp4 [options] [--] <file>'
 
 def exit_if(bbool, value=0):
     if bbool:
         sys.exit(value)
+
+
+class Kwargs(object):
+    def __init__(self, f, **kwargs):
+        self.f = f
+        self.kwargs = kwargs
+    def __call__(self, *args):
+        return self.f(*args, **self.kwargs)
 
 
 def prin(*args, **kwargs):
@@ -222,13 +230,15 @@ def dry_correct_rawmp4_profile(rawmp4, **opts):
         correct_rawmp4_profile(rawmp4)
 
 
-def mkv_extract_track_cmd(mkv, out, track, verbosely=False):
+def mkv_extract_track_cmd(mkv, out, track, verbosely=False, mkvextract=None):
     v = ['-v'] if verbosely else []
-    return ['mkvextract', 'tracks', mkv] + v + [str(track) + ':' + out]
+    if not mkvextract: mkvextract = 'mkvextract'
+    return [mkvextract, 'tracks', mkv] + v + [str(track) + ':' + out]
 
 
 def real_main(mkvfile, **opts):
-    infostr = simplemkv.info.infostring(mkvfile, arguments=['--ui-language', 'en_US'])
+    mkvinfo = opts.get('mkvinfo', None)
+    infostr = simplemkv.info.infostring(mkvfile, arguments=['--ui-language', 'en_US'], mkvinfo=mkvinfo)
     info = simplemkv.info.infodict(infostr.split('\n'))
     tracks = info['tracks']
     def get_track(typ, codec_re):
@@ -259,6 +269,7 @@ def real_main(mkvfile, **opts):
         extract_cmd = mkv_extract_track_cmd(
             mkvfile, out=video, track=videotrack['number'],
             verbosely=(opts['verbosity'] > 0),
+            mkvextract=opts.get('mkvextract', None),
         )
         tempfiles.append(video)
         dry_command(extract_cmd, **opts)
@@ -271,7 +282,8 @@ def real_main(mkvfile, **opts):
         # Extract audio
         extract_cmd = mkv_extract_track_cmd(
             mkvfile, out=audio, track=audiotrack['number'],
-            verbosely=(opts['verbosity'] > 0)
+            verbosely=(opts['verbosity'] > 0),
+            mkvextract=opts.get('mkvextract', None),
         )
         tempfiles.append(audio)
         dry_command(extract_cmd, **opts)
@@ -318,6 +330,60 @@ def real_main(mkvfile, **opts):
                 except OSError:
                     pass
 
+def usage(**kwargs):
+    p = Kwargs(prin, **kwargs)
+    p(simple_usage)
+    p('options:')
+    p(' -h|--help:')
+    p('  Print this help message.')
+    p(' --usage:')
+    p('  Print a short help message.')
+    p(' -v|--verbose:')
+    p('  Print info about what is happening.')
+    p(' --use-mp4box:')
+    p('  Use mp4box when packaging the mp4.')
+    p(' --use-mp4creator:')
+    p('  Use mp4creator when packaging the mp4.')
+    p(' --mp4box=<mp4box>:')
+    p('  Use this <mp4box> command.')
+    p(' --mp4creator=<mp4creator>:')
+    p('  Use this <mp4creator> command.')
+    p(' --video-track=<video-track>:')
+    p('  Use this video track number.')
+    p(' --audio-track=<audio-track>:')
+    p('  Use this audio track number.')
+    p(' --audio-delay-ms=<audio-delay-ms>:')
+    p('  Use this many milliseconds of audio delay.')
+    p(' --audio-bitrate=<audio-bitrate>:')
+    p('  Use this audio bitrate.')
+    p(' --audio-channel=<audio-channel>:')
+    p('  Use this audio channel.')
+    p(' --audio-codec=<audio-codec>:')
+    p('  Use this audio codec.')
+    p(' -o <output>|--output=<output>:')
+    p('  Write the mp4 to this file.')
+    p(' --keep-temp-files:')
+    p('  Keep all temporary files generated.')
+    p(' -n|--dry-run:')
+    p('  Don\'t actually run any commands.')
+    p(' --correct-profile-only:')
+    p('  Only correct the mp4 profile.')
+    p(' --stop-before-extract-video:')
+    p('  Don\'t do anything after extracting video.')
+    p(' --stop-before-correct-profile:')
+    p('  Don\'t do anything after correcting the mp4 profile.')
+    p(' --stop-before-extract-audio:')
+    p('  Don\'t do anything after extracting audio.')
+    p(' --stop-before-convert-audio:')
+    p('  Don\'t do anything after converting video.')
+    p(' --stop-before-video-mp4:')
+    p('  Don\'t do anything after adding video to mp4.')
+    p(' --stop-before-hinting-mp4:')
+    p('  Don\'t do anything after hinting the mp4.')
+    p(' --stop-before-audio-mp4:')
+    p('  Don\'t do anything after adding audio to mp4.')
+    p(' --no-summary:')
+    p('  Don\'t provide a summary.')
 
 def parseopts(argv=None):
     opts = default_options(argv[0])
@@ -327,7 +393,7 @@ def parseopts(argv=None):
             'hvo:n',
             [
                 'help', 'usage', 'version', 'verbose',
-                'mp4box=', 'mp4creator=',
+                'mp4box=', 'mp4creator=', 'mkvinfo=', 'mkvextract=',
                 'use-mp4box', 'use-mp4creator',
                 'video-track=', 'audio-track=',
                 'audio-delay-ms=', 'audio-bitrate=', 'audio-channels=',
@@ -344,8 +410,11 @@ def parseopts(argv=None):
     except getopt.GetoptError, err:
         die(str(err))
     for opt, optarg in options:
-        if opt in ('-h', '--help', '--usage'):
-            prin(usage)
+        if opt in ('-h', '--help'):
+            usage()
+            sys.exit(0)
+        elif opt == '--usage':
+            prin(simple_usage)
             sys.exit(0)
         elif opt == '--version':
             prin(__version__)
@@ -356,6 +425,10 @@ def parseopts(argv=None):
             opts['mp4creator'] = optarg
         elif opt == '--mp4box':
             opts['mp4box'] = optarg
+        elif opt == '--mkvinfo':
+            opts['mkvinfo'] = optarg
+        elif opt == '--mkvextract':
+            opts['mkvextract'] = optarg
         elif opt == '--use-mp4creator':
             opts['mp4'] = 'mp4creator'
         elif opt == '--use-mp4box':
@@ -404,7 +477,7 @@ def main(argv=None):
         argv = sys.argv
     opts, args = parseopts(argv)
     if len(args) != 1:
-        die(usage)
+        die(simple_usage)
     if opts['a_delay'] is not None and opts['mp4'] == 'mp4creator':
         die("Cannot use --audio-delay-ms with mp4creator. Try --use-mp4box")
     if opts['correct_prof_only']:

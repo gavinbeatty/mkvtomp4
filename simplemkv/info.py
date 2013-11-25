@@ -103,7 +103,7 @@ def info_locale_opts(locale):
     return {'arguments': ['--ui-language', locale]}
 
 
-def infostring(mkv, env=None, arguments=[], errorfunc=sys.exit):
+def infostring(mkv, env=None, arguments=[], errorfunc=sys.exit, mkvinfo=None):
     """Run mkvinfo on the given *mkv* and returns stdout as a single string.
 
     On failure, calls *errorfunc* with an error string.
@@ -112,7 +112,8 @@ def infostring(mkv, env=None, arguments=[], errorfunc=sys.exit):
     locale, since that is what *infodict* requires. See
     *info_locale_opts*.
     """
-    cmd = ['mkvinfo'] + arguments + [mkv]
+    if not mkvinfo: mkvinfo = 'mkvinfo'
+    cmd = [mkvinfo] + arguments + [mkv]
     opts = {}
     if env is not None:
         env.setdefault('PATH', os.environ.get('PATH', ''))

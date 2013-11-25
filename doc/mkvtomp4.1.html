@@ -5,14 +5,15 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <meta name="author" content="Gavin Beatty" />
-  <meta name="date" content="2012-12-26" />
+  <meta name="date" content="2013-11-24" />
   <title>MKVTOMP4(1)</title>
+  <style type="text/css">code{white-space: pre;}</style>
 </head>
 <body>
 <div id="header">
 <h1 class="title">MKVTOMP4(1)</h1>
 <h2 class="author">Gavin Beatty</h2>
-<h3 class="date">December 26, 2012</h3>
+<h3 class="date">November 24, 2013</h3>
 </div>
 <h1 id="name">NAME</h1>
 <p>mkvtomp4 - convert H.264 mkv files to mp4 files playable on the PS3</p>
@@ -27,7 +28,21 @@
 <dt>--use-mp4creator, --use-mp4box</dt>
 <dd><p>Specify which mp4 backend to use. mp4creator is the default.</p>
 </dd>
-<dt>--audio-delay-ms=<em><delay_ms></em></dt>
+<dt>--mp4creator=<em>&lt;mp4creator&gt;</em></dt>
+<dd><p>Use &lt;mp4creator&gt; as the mp4creator command.</p>
+</dd>
+<dt>--mp4box=<em>&lt;mp4box&gt;</em></dt>
+<dd><p>Use &lt;mp4box&gt; as the mp4box command.</p>
+</dd>
+<dt>--mkvinfo=<em>&lt;mkvinfo&gt;</em></dt>
+<dd><p>Use &lt;mkvinfo&gt; as the mkvinfo command.</p>
+</dd>
+</dl>
+<p>--mkvextract=*<mkvextract>* : Use &lt;mkvextract&gt; as the mkvextract command.</p>
+<p>--video-track=*<video_track>* : Use &lt;video_track&gt; from the mkv file instead of trying to parse it.</p>
+<p>--audio-track=*<audio_track>* : Use &lt;audio_track&gt; from the mkv file instead of trying to parse it.</p>
+<dl>
+<dt>--audio-delay-ms=<em>&lt;delay_ms&gt;</em></dt>
 <dd><p>When importing the audio track, delay by <code>\&lt;delay_ms&gt;</code> milliseconds. e.g., <code>--audio-delay-ms</code>=<code>1000</code> delays by 1 second. Not supported by mp4creator.</p>
 </dd>
 <dt>--audio-bitrate=<em>&lt;bitrate&gt;</em></dt>
@@ -45,8 +60,14 @@
 <dt>--keep-temp-files</dt>
 <dd><p>Keep all temporary files created while converting.</p>
 </dd>
+<dt>-v, --verbose</dt>
+<dd><p>Print info about what is happening.</p>
+</dd>
 <dt>-n, --dry-run</dt>
 <dd><p>Don't run any commands, but print them in a shellquoted format that can be safely copy-pasted by the user.</p>
+</dd>
+<dt>--correct-profile-only</dt>
+<dd><p>Only correct the profile</p>
 </dd>
 <dt>--stop-before-extract-video</dt>
 <dd><p>Exit before extracting video from <code>\&lt;mkvfile&gt;</code>.</p>
@@ -72,9 +93,6 @@
 <dt><code>\&lt;mkvfile&gt;</code></dt>
 <dd><p>The Matroska (.mkv) file you wish to convert.</p>
 </dd>
-<dt>--correct-profile-only</dt>
-<dd><p>Only correct the profile</p>
-</dd>
 <dt><code>\&lt;rawh264file&gt;</code></dt>
 <dd><p>The raw H.264 stream file that will have its profile corrected for use on the PS3.</p>
 </dd>
@@ -83,23 +101,23 @@
 <p>Gavin Beatty <script type="text/javascript">
 <!--
 h='&#x67;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;';a='&#64;';n='&#x67;&#x61;&#118;&#x69;&#110;&#98;&#x65;&#x61;&#116;&#116;&#x79;';e=n+a+h;
-document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+'a'+'>');
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 // -->
 </script><noscript>&#x67;&#x61;&#118;&#x69;&#110;&#98;&#x65;&#x61;&#116;&#116;&#x79;&#32;&#x61;&#116;&#32;&#x67;&#x6d;&#x61;&#x69;&#108;&#32;&#100;&#x6f;&#116;&#32;&#x63;&#x6f;&#x6d;</noscript></p>
 <h1 id="resources">RESOURCES</h1>
-<p>Website: <a href="http://code.google.com/p/mkvtomp4/"><code class="url">http://code.google.com/p/mkvtomp4/</code></a></p>
+<p>Website: <a href="http://code.google.com/p/mkvtomp4/">http://code.google.com/p/mkvtomp4/</a></p>
 <h1 id="reporting-bugs">REPORTING BUGS</h1>
 <p>Please report all bugs and wishes to <script type="text/javascript">
 <!--
 h='&#x67;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;';a='&#64;';n='&#x67;&#x61;&#118;&#x69;&#110;&#98;&#x65;&#x61;&#116;&#116;&#x79;';e=n+a+h;
-document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+'a'+'>');
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 // -->
 </script><noscript>&#x67;&#x61;&#118;&#x69;&#110;&#98;&#x65;&#x61;&#116;&#116;&#x79;&#32;&#x61;&#116;&#32;&#x67;&#x6d;&#x61;&#x69;&#108;&#32;&#100;&#x6f;&#116;&#32;&#x63;&#x6f;&#x6d;</noscript></p>
 <h1 id="copying">COPYING</h1>
-<p>mkvtomp4 Copyright (c) 2012 Gavin Beatty, <script type="text/javascript">
+<p>mkvtomp4 Copyright (c) 2012, 2013 Gavin Beatty, <script type="text/javascript">
 <!--
 h='&#x67;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;';a='&#64;';n='&#x67;&#x61;&#118;&#x69;&#110;&#98;&#x65;&#x61;&#116;&#116;&#x79;';e=n+a+h;
-document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+'a'+'>');
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 // -->
 </script><noscript>&#x67;&#x61;&#118;&#x69;&#110;&#98;&#x65;&#x61;&#116;&#116;&#x79;&#32;&#x61;&#116;&#32;&#x67;&#x6d;&#x61;&#x69;&#108;&#32;&#100;&#x6f;&#116;&#32;&#x63;&#x6f;&#x6d;</noscript></p>
 <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>

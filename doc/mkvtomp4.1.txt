@@ -1,6 +1,6 @@
 % MKVTOMP4(1)
 % Gavin Beatty
-% December 26, 2012
+% November 24, 2013
 
 # NAME
 
@@ -32,11 +32,23 @@ We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
 \--use-mp4creator, \--use-mp4box
 :   Specify which mp4 backend to use. mp4creator is the default.
 
-\--mp4creator=*\<mp4creator>
-:   Specific the command/path to execute *mp4creator*.
+\--mp4creator=*\<mp4creator>*
+:   Use \<mp4creator> as the mp4creator command.
 
-\--mp4box=*\<mp4box>
-:   Specific the command/path to execute *MP4Box*.
+\--mp4box=*\<mp4box>*
+:   Use \<mp4box> as the mp4box command.
+
+--mkvinfo=*\<mkvinfo>*
+:   Use \<mkvinfo> as the mkvinfo command.
+
+--mkvextract=\*<mkvextract>*
+:   Use \<mkvextract> as the mkvextract command.
+
+--video-track=\*<video_track>*
+:   Use \<video_track> from the mkv file instead of trying to parse it.
+
+--audio-track=\*<audio_track>*
+:   Use \<audio_track> from the mkv file instead of trying to parse it.
 
 \--audio-delay-ms=*\<delay_ms>*
 :   When importing the audio track, delay by `\<delay_ms>` milliseconds.
@@ -59,9 +71,15 @@ We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
 \--keep-temp-files
 :   Keep all temporary files created while converting.
 
+-v, --verbose
+:   Print info about what is happening.
+
 -n, \--dry-run
 :   Don't run any commands, but print them in a shellquoted format that can be
     safely copy-pasted by the user.
+
+--correct-profile-only
+:   Only correct the profile
 
 \--stop-before-extract-video
 :   Exit before extracting video from `\<mkvfile>`.
@@ -89,9 +107,6 @@ We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
 `\<mkvfile>`
 :   The Matroska (.mkv) file you wish to convert.
 
---correct-profile-only
-:   Only correct the profile
-
 `\<rawh264file>`
 :   The raw H.264 stream file that will have its profile corrected for use on
     the PS3.
@@ -114,7 +129,7 @@ Please report all bugs and wishes to <gavinbeatty@gmail.com>
 
 # COPYING
 
-mkvtomp4 Copyright \(c) 2012 Gavin Beatty, <gavinbeatty@gmail.com>
+mkvtomp4 Copyright \(c) 2012, 2013 Gavin Beatty, <gavinbeatty@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

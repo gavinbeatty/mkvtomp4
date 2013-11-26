@@ -4,24 +4,23 @@
 
 # NAME
 
-mkvtomp4 - convert H.264 mkv files to mp4 files playable on the PS3
+mkvtomp4.py - convert H.264 mkv files to mp4 files playable on the PS3
 
 
 # SYNOPSIS
 
-*mkvtomp4* [*OPTIONS*] [--] *\<mkvfile>*
+*mkvtomp4.py* [OPTIONS] [--] \<mkvfile>
 
-*mkvtomp4* *--correct-profile-only* [--] *\<rawh264file>*
+*mkvtomp4.py* --correct-profile-only [--] \<rawh264file>
 
 
 # DESCRIPTION
 
-Uses mpeg4ip or GPAC's MP4Box, mkvtoolnix and ffmpeg to convert troublesome
-mkv files to mp4.
+Uses existing tools to convert troublesome mkv files to mp4.
 The conversion does not re-encode the video and only re-encodes the audio if
 it doesn't use AAC codec (one can override this behaviour using
 `--audio-codec`).
-They will be playable on the Sony PS3.
+The resulting mp4 will be playable on the Sony PS3.
 
 We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
 *ffmpeg* is optional but required for audio transcoding.
@@ -29,44 +28,8 @@ We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
 
 # OPTIONS
 
-\--use-mp4creator, \--use-mp4box
-:   Specify which mp4 backend to use. mp4creator is the default.
-
-\--mp4creator=*\<mp4creator>*
-:   Use \<mp4creator> as the mp4creator command.
-
-\--mp4box=*\<mp4box>*
-:   Use \<mp4box> as the mp4box command.
-
---mkvinfo=*\<mkvinfo>*
-:   Use \<mkvinfo> as the mkvinfo command.
-
---mkvextract=\*<mkvextract>*
-:   Use \<mkvextract> as the mkvextract command.
-
---video-track=\*<video_track>*
-:   Use \<video_track> from the mkv file instead of trying to parse it.
-
---audio-track=\*<audio_track>*
-:   Use \<audio_track> from the mkv file instead of trying to parse it.
-
-\--audio-delay-ms=*\<delay_ms>*
-:   When importing the audio track, delay by `\<delay_ms>` milliseconds.
-    e.g., `--audio-delay-ms`=`1000` delays by 1 second.
-    Not supported by mp4creator.
-
-\--audio-bitrate=*\<bitrate>*
-:   If/When converting audio, use the given bitrate. e.g., `128`.
-
-\--audio-channels=*\<channels>*
-:   If/When converting audio, use `\<channels>` channels in the output. e.g., `5.1`.
-
-\--audio-codec=*\<codec>*
-:   If/When converting audio, convert to `\<codec>`. Default is `libfaac`. This
-    should be something supported by *ffmpeg*.
-
--o, \--output=*\<outfile>*
-:   Put the completed mp4 into `\<outfile>`.
+-o, \--output=\<outfile>
+:   Put the completed mp4 into `<outfile>`.
 
 \--keep-temp-files
 :   Keep all temporary files created while converting.
@@ -78,17 +41,53 @@ We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
 :   Don't run any commands, but print them in a shellquoted format that can be
     safely copy-pasted by the user.
 
+\--use-mp4creator, \--use-mp4box
+:   Specify which mp4 backend to use. mp4creator is the default.
+
+\--mp4creator=\<mp4creator>
+:   Use `<mp4creator>` as the mp4creator command.
+
+\--mp4box=\<mp4box>
+:   Use `<mp4box>` as the mp4box command.
+
+\--mkvinfo=\<mkvinfo>
+:   Use `<mkvinfo>` as the mkvinfo command.
+
+\--mkvextract=\<mkvextract>
+:   Use `<mkvextract>` as the mkvextract command.
+
+\--video-track=\<video_track>
+:   Use `<video_track>` from the mkv file instead of trying to parse it.
+
+\--audio-track=\<audio_track>
+:   Use `<audio_track>` from the mkv file instead of trying to parse it.
+
+\--audio-delay-ms=\<delay_ms>
+:   When importing the audio track, delay by `<delay_ms>` milliseconds.
+    e.g., `--audio-delay-ms`=`1000` delays by 1 second.
+    Not supported by mp4creator.
+
+\--audio-bitrate=\<bitrate>
+:   If/When converting audio, use the given bitrate. e.g., `128`.
+
+\--audio-channels=\<channels>
+:   If/When converting audio, use `<channels>` channels in the output. e.g., `5.1`.
+
+\--audio-codec=\<codec>
+:   If/When converting audio, convert to `<codec>`. Default is `libfaac`. This
+    should be something supported by *ffmpeg*.
+
 --correct-profile-only
 :   Only correct the profile
 
 \--stop-before-extract-video
-:   Exit before extracting video from `\<mkvfile>`.
+:   Exit before extracting video from `<mkvfile>`.
 
 \--stop-before-correct-profile
 :   Exit before correcting profile of raw H.264 stream.
 
 \--stop-before-extract-audio
-:   Exit before extracting audio from `\<mkvfile>`.
+:   Exit before extracting audio from `<mkvfile>`.
 
 \--stop-before-convert-audio
 :   Exit before converting audio previously extracted. This will stop even if
@@ -104,10 +103,10 @@ We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
 :   Exit before adding the extracted (and possibly converted) audio to the mp4
     container.
 
-`\<mkvfile>`
+\<mkvfile>
 :   The Matroska (.mkv) file you wish to convert.
 
-`\<rawh264file>`
+\<rawh264file>
 :   The raw H.264 stream file that will have its profile corrected for use on
     the PS3.
 
@@ -119,7 +118,7 @@ Gavin Beatty <gavinbeatty@gmail.com>
 
 # RESOURCES
 
-Website: <http://code.google.com/p/mkvtomp4/>
+Website: <http://github.com/gavinbeatty/mkvtomp4/>
 
 
 # REPORTING BUGS

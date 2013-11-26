@@ -1,86 +1,27 @@
 .TH "MKVTOMP4" "1" "November 24, 2013" "" ""
 .SH NAME
 .PP
-mkvtomp4 \- convert H.264 mkv files to mp4 files playable on the PS3
+mkvtomp4.py \- convert H.264 mkv files to mp4 files playable on the PS3
 .SH SYNOPSIS
 .PP
-\f[I]mkvtomp4\f[] [\f[I]OPTIONS\f[]] [\-\-] \f[I]<mkvfile>\f[]
+\f[I]mkvtomp4.py\f[] [OPTIONS] [\-\-] <mkvfile>
 .PP
-\f[I]mkvtomp4\f[] \f[I]\-\-correct\-profile\-only\f[] [\-\-]
-\f[I]<rawh264file>\f[]
+\f[I]mkvtomp4.py\f[] \-\-correct\-profile\-only [\-\-] <rawh264file>
 .SH DESCRIPTION
 .PP
-Uses mpeg4ip or GPAC\[aq]s MP4Box, mkvtoolnix and ffmpeg to convert
-troublesome mkv files to mp4.
+Uses existing tools to convert troublesome mkv files to mp4.
 The conversion does not re\-encode the video and only re\-encodes the
 audio if it doesn\[aq]t use AAC codec (one can override this behaviour
 using \f[C]\-\-audio\-codec\f[]).
-They will be playable on the Sony PS3.
+The resulting mp4 will be playable on the Sony PS3.
 .PP
 We depend on: \f[I]mkvtoolnix\f[], \f[I]mpeg4ip\f[] or GPAC\[aq]s
 \f[I]MP4Box\f[] for the conversion.
 \f[I]ffmpeg\f[] is optional but required for audio transcoding.
 .SH OPTIONS
 .TP
-.B \-\-use\-mp4creator, \-\-use\-mp4box
-Specify which mp4 backend to use.
-mp4creator is the default.
-.RS
-.RE
-.TP
-.B \-\-mp4creator=\f[I]<mp4creator>\f[]
-Use <mp4creator> as the mp4creator command.
-.RS
-.RE
-.TP
-.B \-\-mp4box=\f[I]<mp4box>\f[]
-Use <mp4box> as the mp4box command.
-.RS
-.RE
-.TP
-.B \-\-mkvinfo=\f[I]<mkvinfo>\f[]
-Use <mkvinfo> as the mkvinfo command.
-.RS
-.RE
-.PP
-\-\-mkvextract=** : Use <mkvextract> as the mkvextract command.
-.PP
-\-\-video\-track=** : Use <video_track> from the mkv file instead of
-trying to parse it.
-.PP
-\-\-audio\-track=** : Use <audio_track> from the mkv file instead of
-trying to parse it.
-.TP
-.B \-\-audio\-delay\-ms=\f[I]<delay_ms>\f[]
-When importing the audio track, delay by \f[C]\\<delay_ms>\f[]
-milliseconds.
-e.g., \f[C]\-\-audio\-delay\-ms\f[]=\f[C]1000\f[] delays by 1 second.
-Not supported by mp4creator.
-.RS
-.RE
-.TP
-.B \-\-audio\-bitrate=\f[I]<bitrate>\f[]
-If/When converting audio, use the given bitrate.
-e.g., \f[C]128\f[].
-.RS
-.RE
-.TP
-.B \-\-audio\-channels=\f[I]<channels>\f[]
-If/When converting audio, use \f[C]\\<channels>\f[] channels in the
-output.
-e.g., \f[C]5.1\f[].
-.RS
-.RE
-.TP
-.B \-\-audio\-codec=\f[I]<codec>\f[]
-If/When converting audio, convert to \f[C]\\<codec>\f[].
-Default is \f[C]libfaac\f[].
-This should be something supported by \f[I]ffmpeg\f[].
-.RS
-.RE
-.TP
-.B \-o, \-\-output=\f[I]<outfile>\f[]
-Put the completed mp4 into \f[C]\\<outfile>\f[].
+.B \-o, \-\-output=<outfile>
+Put the completed mp4 into \f[C]<outfile>\f[].
 .RS
 .RE
 .TP
@@ -100,13 +41,79 @@ can be safely copy\-pasted by the user.
 .RS
 .RE
 .TP
+.B \-\-use\-mp4creator, \-\-use\-mp4box
+Specify which mp4 backend to use.
+mp4creator is the default.
+.RS
+.RE
+.TP
+.B \-\-mp4creator=<mp4creator>
+Use \f[C]<mp4creator>\f[] as the mp4creator command.
+.RS
+.RE
+.TP
+.B \-\-mp4box=<mp4box>
+Use \f[C]<mp4box>\f[] as the mp4box command.
+.RS
+.RE
+.TP
+.B \-\-mkvinfo=<mkvinfo>
+Use \f[C]<mkvinfo>\f[] as the mkvinfo command.
+.RS
+.RE
+.TP
+.B \-\-mkvextract=<mkvextract>
+Use \f[C]<mkvextract>\f[] as the mkvextract command.
+.RS
+.RE
+.TP
+.B \-\-video\-track=<video_track>
+Use \f[C]<video_track>\f[] from the mkv file instead of trying to parse
+it.
+.RS
+.RE
+.TP
+.B \-\-audio\-track=<audio_track>
+Use \f[C]<audio_track>\f[] from the mkv file instead of trying to parse
+it.
+.RS
+.RE
+.TP
+.B \-\-audio\-delay\-ms=<delay_ms>
+When importing the audio track, delay by \f[C]<delay_ms>\f[]
+milliseconds.
+e.g., \f[C]\-\-audio\-delay\-ms\f[]=\f[C]1000\f[] delays by 1 second.
+Not supported by mp4creator.
+.RS
+.RE
+.TP
+.B \-\-audio\-bitrate=<bitrate>
+If/When converting audio, use the given bitrate.
+e.g., \f[C]128\f[].
+.RS
+.RE
+.TP
+.B \-\-audio\-channels=<channels>
+If/When converting audio, use \f[C]<channels>\f[] channels in the
+output.
+e.g., \f[C]5.1\f[].
+.RS
+.RE
+.TP
+.B \-\-audio\-codec=<codec>
+If/When converting audio, convert to \f[C]<codec>\f[].
+Default is \f[C]libfaac\f[].
+This should be something supported by \f[I]ffmpeg\f[].
+.RS
+.RE
+.TP
 .B \-\-correct\-profile\-only
 Only correct the profile
 .RS
 .RE
 .TP
 .B \-\-stop\-before\-extract\-video
-Exit before extracting video from \f[C]\\<mkvfile>\f[].
+Exit before extracting video from \f[C]<mkvfile>\f[].
 .RS
 .RE
 .TP
@@ -116,7 +123,7 @@ Exit before correcting profile of raw H.264 stream.
 .RE
 .TP
 .B \-\-stop\-before\-extract\-audio
-Exit before extracting audio from \f[C]\\<mkvfile>\f[].
+Exit before extracting audio from \f[C]<mkvfile>\f[].
 .RS
 .RE
 .TP
@@ -142,12 +149,12 @@ mp4 container.
 .RS
 .RE
 .TP
-.B \f[C]\\<mkvfile>\f[]
+.B <mkvfile>
 The Matroska (.mkv) file you wish to convert.
 .RS
 .RE
 .TP
-.B \f[C]\\<rawh264file>\f[]
+.B <rawh264file>
 The raw H.264 stream file that will have its profile corrected for use
 on the PS3.
 .RS
@@ -157,7 +164,7 @@ on the PS3.
 Gavin Beatty <gavinbeatty@gmail.com>
 .SH RESOURCES
 .PP
-Website: <http://code.google.com/p/mkvtomp4/>
+Website: <http://github.com/gavinbeatty/mkvtomp4/>
 .SH REPORTING BUGS
 .PP
 Please report all bugs and wishes to <gavinbeatty@gmail.com>

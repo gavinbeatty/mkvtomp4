@@ -16,46 +16,17 @@
 <h3 class="date">November 24, 2013</h3>
 </div>
 <h1 id="name">NAME</h1>
-<p>mkvtomp4 - convert H.264 mkv files to mp4 files playable on the PS3</p>
+<p>mkvtomp4.py - convert H.264 mkv files to mp4 files playable on the PS3</p>
 <h1 id="synopsis">SYNOPSIS</h1>
-<p><em>mkvtomp4</em> [<em>OPTIONS</em>] [--] <em>&lt;mkvfile&gt;</em></p>
-<p><em>mkvtomp4</em> <em>--correct-profile-only</em> [--] <em>&lt;rawh264file&gt;</em></p>
+<p><em>mkvtomp4.py</em> [OPTIONS] [--] &lt;mkvfile&gt;</p>
+<p><em>mkvtomp4.py</em> --correct-profile-only [--] &lt;rawh264file&gt;</p>
 <h1 id="description">DESCRIPTION</h1>
-<p>Uses mpeg4ip or GPAC's MP4Box, mkvtoolnix and ffmpeg to convert troublesome mkv files to mp4. The conversion does not re-encode the video and only re-encodes the audio if it doesn't use AAC codec (one can override this behaviour using <code>--audio-codec</code>). They will be playable on the Sony PS3.</p>
+<p>Uses existing tools to convert troublesome mkv files to mp4. The conversion does not re-encode the video and only re-encodes the audio if it doesn't use AAC codec (one can override this behaviour using <code>--audio-codec</code>). The resulting mp4 will be playable on the Sony PS3.</p>
 <p>We depend on: <em>mkvtoolnix</em>, <em>mpeg4ip</em> or GPAC's <em>MP4Box</em> for the conversion. <em>ffmpeg</em> is optional but required for audio transcoding.</p>
 <h1 id="options">OPTIONS</h1>
 <dl>
-<dt>--use-mp4creator, --use-mp4box</dt>
-<dd><p>Specify which mp4 backend to use. mp4creator is the default.</p>
-</dd>
-<dt>--mp4creator=<em>&lt;mp4creator&gt;</em></dt>
-<dd><p>Use &lt;mp4creator&gt; as the mp4creator command.</p>
-</dd>
-<dt>--mp4box=<em>&lt;mp4box&gt;</em></dt>
-<dd><p>Use &lt;mp4box&gt; as the mp4box command.</p>
-</dd>
-<dt>--mkvinfo=<em>&lt;mkvinfo&gt;</em></dt>
-<dd><p>Use &lt;mkvinfo&gt; as the mkvinfo command.</p>
-</dd>
-</dl>
-<p>--mkvextract=*<mkvextract>* : Use &lt;mkvextract&gt; as the mkvextract command.</p>
-<p>--video-track=*<video_track>* : Use &lt;video_track&gt; from the mkv file instead of trying to parse it.</p>
-<p>--audio-track=*<audio_track>* : Use &lt;audio_track&gt; from the mkv file instead of trying to parse it.</p>
-<dl>
-<dt>--audio-delay-ms=<em>&lt;delay_ms&gt;</em></dt>
-<dd><p>When importing the audio track, delay by <code>\&lt;delay_ms&gt;</code> milliseconds. e.g., <code>--audio-delay-ms</code>=<code>1000</code> delays by 1 second. Not supported by mp4creator.</p>
-</dd>
-<dt>--audio-bitrate=<em>&lt;bitrate&gt;</em></dt>
-<dd><p>If/When converting audio, use the given bitrate. e.g., <code>128</code>.</p>
-</dd>
-<dt>--audio-channels=<em>&lt;channels&gt;</em></dt>
-<dd><p>If/When converting audio, use <code>\&lt;channels&gt;</code> channels in the output. e.g., <code>5.1</code>.</p>
-</dd>
-<dt>--audio-codec=<em>&lt;codec&gt;</em></dt>
-<dd><p>If/When converting audio, convert to <code>\&lt;codec&gt;</code>. Default is <code>libfaac</code>. This should be something supported by <em>ffmpeg</em>.</p>
-</dd>
-<dt>-o, --output=<em>&lt;outfile&gt;</em></dt>
-<dd><p>Put the completed mp4 into <code>\&lt;outfile&gt;</code>.</p>
+<dt>-o, --output=&lt;outfile&gt;</dt>
+<dd><p>Put the completed mp4 into <code>&lt;outfile&gt;</code>.</p>
 </dd>
 <dt>--keep-temp-files</dt>
 <dd><p>Keep all temporary files created while converting.</p>
@@ -66,17 +37,50 @@
 <dt>-n, --dry-run</dt>
 <dd><p>Don't run any commands, but print them in a shellquoted format that can be safely copy-pasted by the user.</p>
 </dd>
+<dt>--use-mp4creator, --use-mp4box</dt>
+<dd><p>Specify which mp4 backend to use. mp4creator is the default.</p>
+</dd>
+<dt>--mp4creator=&lt;mp4creator&gt;</dt>
+<dd><p>Use <code>&lt;mp4creator&gt;</code> as the mp4creator command.</p>
+</dd>
+<dt>--mp4box=&lt;mp4box&gt;</dt>
+<dd><p>Use <code>&lt;mp4box&gt;</code> as the mp4box command.</p>
+</dd>
+<dt>--mkvinfo=&lt;mkvinfo&gt;</dt>
+<dd><p>Use <code>&lt;mkvinfo&gt;</code> as the mkvinfo command.</p>
+</dd>
+<dt>--mkvextract=&lt;mkvextract&gt;</dt>
+<dd><p>Use <code>&lt;mkvextract&gt;</code> as the mkvextract command.</p>
+</dd>
+<dt>--video-track=&lt;video_track&gt;</dt>
+<dd><p>Use <code>&lt;video_track&gt;</code> from the mkv file instead of trying to parse it.</p>
+</dd>
+<dt>--audio-track=&lt;audio_track&gt;</dt>
+<dd><p>Use <code>&lt;audio_track&gt;</code> from the mkv file instead of trying to parse it.</p>
+</dd>
+<dt>--audio-delay-ms=&lt;delay_ms&gt;</dt>
+<dd><p>When importing the audio track, delay by <code>&lt;delay_ms&gt;</code> milliseconds. e.g., <code>--audio-delay-ms</code>=<code>1000</code> delays by 1 second. Not supported by mp4creator.</p>
+</dd>
+<dt>--audio-bitrate=&lt;bitrate&gt;</dt>
+<dd><p>If/When converting audio, use the given bitrate. e.g., <code>128</code>.</p>
+</dd>
+<dt>--audio-channels=&lt;channels&gt;</dt>
+<dd><p>If/When converting audio, use <code>&lt;channels&gt;</code> channels in the output. e.g., <code>5.1</code>.</p>
+</dd>
+<dt>--audio-codec=&lt;codec&gt;</dt>
+<dd><p>If/When converting audio, convert to <code>&lt;codec&gt;</code>. Default is <code>libfaac</code>. This should be something supported by <em>ffmpeg</em>.</p>
+</dd>
 <dt>--correct-profile-only</dt>
 <dd><p>Only correct the profile</p>
 </dd>
 <dt>--stop-before-extract-video</dt>
-<dd><p>Exit before extracting video from <code>\&lt;mkvfile&gt;</code>.</p>
+<dd><p>Exit before extracting video from <code>&lt;mkvfile&gt;</code>.</p>
 </dd>
 <dt>--stop-before-correct-profile</dt>
 <dd><p>Exit before correcting profile of raw H.264 stream.</p>
 </dd>
 <dt>--stop-before-extract-audio</dt>
-<dd><p>Exit before extracting audio from <code>\&lt;mkvfile&gt;</code>.</p>
+<dd><p>Exit before extracting audio from <code>&lt;mkvfile&gt;</code>.</p>
 </dd>
 <dt>--stop-before-convert-audio</dt>
 <dd><p>Exit before converting audio previously extracted. This will stop even if the audio does not need to be converted.</p>
@@ -90,10 +94,10 @@
 <dt>--stop-before-audio-mp4</dt>
 <dd><p>Exit before adding the extracted (and possibly converted) audio to the mp4 container.</p>
 </dd>
-<dt><code>\&lt;mkvfile&gt;</code></dt>
+<dt>&lt;mkvfile&gt;</dt>
 <dd><p>The Matroska (.mkv) file you wish to convert.</p>
 </dd>
-<dt><code>\&lt;rawh264file&gt;</code></dt>
+<dt>&lt;rawh264file&gt;</dt>
 <dd><p>The raw H.264 stream file that will have its profile corrected for use on the PS3.</p>
 </dd>
 </dl>
@@ -105,7 +109,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 // -->
 </script><noscript>&#x67;&#x61;&#118;&#x69;&#110;&#98;&#x65;&#x61;&#116;&#116;&#x79;&#32;&#x61;&#116;&#32;&#x67;&#x6d;&#x61;&#x69;&#108;&#32;&#100;&#x6f;&#116;&#32;&#x63;&#x6f;&#x6d;</noscript></p>
 <h1 id="resources">RESOURCES</h1>
-<p>Website: <a href="http://code.google.com/p/mkvtomp4/">http://code.google.com/p/mkvtomp4/</a></p>
+<p>Website: <a href="http://github.com/gavinbeatty/mkvtomp4/">http://github.com/gavinbeatty/mkvtomp4/</a></p>
 <h1 id="reporting-bugs">REPORTING BUGS</h1>
 <p>Please report all bugs and wishes to <script type="text/javascript">
 <!--

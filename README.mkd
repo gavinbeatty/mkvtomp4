@@ -2,14 +2,14 @@ mkvtomp4
 ========
 Gavin Beatty <gavinbeatty@gmail.com>
 
-<http://code.google.com/p/mkvtomp4/>
-
-mkvtomp4: Uses mpeg4ip or GPAC's MP4Box, mkvtoolnix and ffmpeg to convert
-troublesome mkv files to mp4.
+Uses existing tools to convert troublesome mkv files to mp4.
 The conversion does not re-encode the video and only re-encodes the audio if
 it doesn't use AAC codec (one can override this behaviour using
 `--audio-codec`).
-They will be playable on the Sony PS3.
+The resulting mp4 will be playable on the Sony PS3.
+
+We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
+*ffmpeg* is optional but required for audio transcoding.
 
 Check the manual in `doc/mkvtomp4.1.txt`.
 
@@ -18,13 +18,16 @@ Dependencies
 ------------
 
 Tools:
-* mkvtoolnix
-* mpeg4ip or GPAC's MP4Box
-* ffmpeg
 
-On Linux, use your package manager to install.
-On Mac OS X, use MacPorts to install.
-On Windows, go to the tools' individual websites and find windows binaries.
+* *mkvtoolnix*
+* *mpeg4ip* or GPAC's *MP4Box*
+* *ffmpeg*
+
+To install these tools:
+
+* On Linux, use your package manager.
+* On Mac OS X, use MacPorts or homebrew.
+* On Windows, go to each tools' individual websites.
 
 Everything else is written using only fully cross-platform python, except:
 

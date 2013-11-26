@@ -160,7 +160,7 @@ def mp4_add_audio_optimize_cmd(mp4file, audio, **opts):
             '-c', audio, '-interleave', '-optimize', mp4file
         ]
     elif opts['mp4'] == 'mp4box':
-        delay = opts.get('delay', None)
+        delay = opts.get('a_delay', None)
         if delay is not None:
             delay = ':delay=' + delay
         else:

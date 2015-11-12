@@ -84,7 +84,7 @@ codeopts = {
     'license': 'http://opensource.org/licenses/MIT',
     'platforms': ["any"],
     'classifiers': filter(None, classifiers.split("\n")),
-    'url': 'http://code.google.com/p/mkvtomp4/',
+    'url': 'https://github.com/gavinbeatty/mkvtomp4/',
     'version': __version__,
     'scripts': ['mkvtomp4.py'],
     'py_modules': ['simplemkv.version', 'simplemkv.info', 'simplemkv.tomp4'],

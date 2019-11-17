@@ -83,7 +83,8 @@ class MainLineHandler:
         if l.startswith('|+ Segment tracks'):
             self._info.setdefault('tracks', [])
             return True
-        elif l.startswith('| + A track'):
+        elif l.startswith('| + Track'):
+            self._info.setdefault('tracks', [])
             self._info['tracks'].append({})
             handlers.append(self._track)
             return True

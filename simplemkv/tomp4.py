@@ -169,6 +169,8 @@ def mp4_add_audio_optimize_cmd(mp4file, audio, **opts):
             opts.get('mp4box', 'MP4Box'),
             '-add', audio + '#audio:trackID=2' + delay, mp4file
         ]
+    else:
+        raise RuntimeError('Unknown mp4 option: {}'.format(opts['mp4']))
 
 
 def mp4_add_hint_cmd(mp4file, **opts):
@@ -176,6 +178,8 @@ def mp4_add_hint_cmd(mp4file, **opts):
         return [opts.get('mp4creator', 'mp4creator'), '-hint=1', mp4file]
     elif opts['mp4'] == 'mp4box':
         return None
+    else:
+        raise RuntimeError('Unknown mp4 option: {}'.format(opts['mp4']))
 
 
 def mp4_add_video_cmd(mp4file, video, fps, **opts):
@@ -238,9 +242,15 @@ def mkv_extract_track_cmd(mkv, out, track, verbosely=False, mkvextract=None):
 
 def real_main(mkvfile, **opts):
     mkvinfo = opts.get('mkvinfo', None)
-    infostr = simplemkv.info.infostring(mkvfile, arguments=['--ui-language', 'en_US'], mkvinfo=mkvinfo)
+    infoopts = simplemkv.info.info_locale_opts('en_US')
+    infoopts['mkvinfo'] = mkvinfo
+    infostr = simplemkv.info.infostring(mkvfile, **infoopts)
     info = simplemkv.info.infodict(infostr.split('\n'))
-    tracks = info['tracks']
+    try:
+        tracks = info['tracks']
+    except Exception as ex:
+        sys.exit('No tracks key in [{}]'.format(','.join(info)))
+        raise
     def get_track(typ, codec_re):
         number = opts.get(typ + '_track', None)
         if number is not None:
@@ -294,6 +304,8 @@ def real_main(mkvfile, **opts):
             audio_cmd = ffmpeg_convert_audio_cmd(oldaudio, aacaudio, **opts)
             tempfiles.append(aacaudio)
             dry_system(audio_cmd, **opts)
+        else:
+            aacaudio = audio
         if opts['output'] is None:
             opts['output'] = os.path.splitext(mkvfile)[0] + '.mp4'
         exit_if(opts['stop_v_mp4'])
@@ -316,12 +328,13 @@ def real_main(mkvfile, **opts):
             **opts
         )
         dry_command(mp4opt_cmd, **opts)
+        if opts['mp4'] == 'ffmpeg':
+            dry_command(['mv', opts['output'] + '.mp4', opts['output']], **opts)
         succeeded = True
     finally:
         if not succeeded:
             eprint('keeping temp files since we failed.')
-            return
-        if opts['dry_run']:
+        elif opts['dry_run']:
             prin(sq(['rm', '-f'] + tempfiles))
         elif not opts['keep_temp_files']:
             for f in tempfiles:

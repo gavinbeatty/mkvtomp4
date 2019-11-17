@@ -5,7 +5,6 @@ try:
     from .version import __version__
 except ImportError:
     __version__ = 'unknown'
-from . import info
 
 import sys
 import os
@@ -19,6 +18,7 @@ import simplemkv.info
 
 simple_usage = 'usage: mkvtomp4 [options] [--] <file>'
 
+
 def exit_if(bbool, value=0):
     if bbool:
         sys.exit(value)
@@ -28,6 +28,7 @@ class Kwargs(object):
     def __init__(self, f, **kwargs):
         self.f = f
         self.kwargs = kwargs
+
     def __call__(self, *args):
         return self.f(*args, **self.kwargs)
 
@@ -254,7 +255,8 @@ def dry_correct_rawmp4_profile(rawmp4, **opts):
 
 def mkv_extract_track_cmd(mkv, out, track, verbosely=False, mkvextract=None):
     v = ['-v'] if verbosely else []
-    if not mkvextract: mkvextract = 'mkvextract'
+    if not mkvextract:
+        mkvextract = 'mkvextract'
     return [mkvextract, 'tracks', mkv] + v + [str(track) + ':' + out]
 
 
@@ -266,9 +268,10 @@ def real_main(mkvfile, **opts):
     info = simplemkv.info.infodict(infostr.split('\n'))
     try:
         tracks = info['tracks']
-    except Exception as ex:
+    except Exception:
         sys.exit('No tracks key in [{}]'.format(','.join(info)))
         raise
+
     def get_track(typ, codec_re):
         number = opts.get(typ + '_track', None)
         if number is not None:
@@ -281,7 +284,7 @@ def real_main(mkvfile, **opts):
         else:
             types = [
                 t for t in tracks
-                if t['type'] == typ # and codec_re.search(t['codec'])
+                if t['type'] == typ  # and codec_re.search(t['codec'])
             ]
             if not types:
                 die('appropriate %s track not found: %s' % (typ, str(tracks)))
@@ -349,7 +352,8 @@ def real_main(mkvfile, **opts):
         )
         dry_command(mp4opt_cmd, **opts)
         if opts['mp4'] == 'ffmpeg':
-            dry_command(['mv', opts['output'] + '.mp4', opts['output']], **opts)
+            mvcmd = ['mv', opts['output'] + '.mp4', opts['output']]
+            dry_command(mvcmd, **opts)
         succeeded = True
     finally:
         if not succeeded:
@@ -362,6 +366,7 @@ def real_main(mkvfile, **opts):
                     os.remove(f)
                 except OSError:
                     pass
+
 
 def usage(**kwargs):
     p = Kwargs(prin, **kwargs)

@@ -1,6 +1,6 @@
 mkvtomp4
 ========
-Gavin Beatty <gavinbeatty@gmail.com>
+Gavin Beatty <public@gavinbeatty.com>
 
 Uses existing tools to convert troublesome mkv files to mp4.
 The conversion does not re-encode the video and only re-encodes the audio if

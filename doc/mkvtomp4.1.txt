@@ -1,6 +1,6 @@
 % MKVTOMP4(1)
 % Gavin Beatty
-% November 24, 2013
+% November 17, 2019
 
 # NAME
 
@@ -9,9 +9,9 @@ mkvtomp4.py - convert H.264 mkv files to mp4 files playable on the PS3
 
 # SYNOPSIS
 
-*mkvtomp4.py* [OPTIONS] [--] \<mkvfile>
+*mkvtomp4.py* [OPTIONS] [\--] \<mkvfile>
 
-*mkvtomp4.py* --correct-profile-only [--] \<rawh264file>
+*mkvtomp4.py* \--correct-profile-only [\--] \<rawh264file>
 
 
 # DESCRIPTION
@@ -41,14 +41,17 @@ We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
 :   Don't run any commands, but print them in a shellquoted format that can be
     safely copy-pasted by the user.
 
-\--use-mp4creator, \--use-mp4box
-:   Specify which mp4 backend to use. mp4creator is the default.
+\--use-mp4creator, \--use-mp4box, \--use-ffmpeg
+:   Specify which mp4 backend to use. mp4box is the default.
 
 \--mp4creator=\<mp4creator>
 :   Use `<mp4creator>` as the mp4creator command.
 
 \--mp4box=\<mp4box>
 :   Use `<mp4box>` as the mp4box command.
+
+\--ffmpeg=\<ffmpeg>
+:   Use `<ffmpeg>` as the ffmpeg command.
 
 \--mkvinfo=\<mkvinfo>
 :   Use `<mkvinfo>` as the mkvinfo command.
@@ -113,7 +116,7 @@ We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
 
 # AUTHOR
 
-Gavin Beatty <gavinbeatty@gmail.com>
+Gavin Beatty <public@gavinbeatty.com>
 
 
 # RESOURCES
@@ -123,12 +126,12 @@ Website: <http://github.com/gavinbeatty/mkvtomp4/>
 
 # REPORTING BUGS
 
-Please report all bugs and wishes to <gavinbeatty@gmail.com>
+Please report all bugs and wishes to <public@gavinbeatty.com>
 
 
 # COPYING
 
-mkvtomp4 Copyright \(c) 2012, 2013 Gavin Beatty, <gavinbeatty@gmail.com>
+mkvtomp4 Copyright \(c) 2012, 2013, 2019 Gavin Beatty, <public@gavinbeatty.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

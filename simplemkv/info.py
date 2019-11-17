@@ -8,6 +8,7 @@ try:
 except ImportError:
     __version__ = 'unknown'
 
+
 def indent_level(line):
     """Get the indent level for a line of mkvinfo output.
     Returns -1 if *line* is not the correct format."""
@@ -19,12 +20,13 @@ def indent_level(line):
 
 class TrackLineHandler:
     'Parse a line of (English) mkvinfo output inside "A track".'
-    _number   = '|  + Track number: '
-    _type     = '|  + Track type: '
-    _codec    = '|  + Codec ID: '
-    _lang     = '|  + Language: '
+    _number = '|  + Track number: '
+    _type = '|  + Track type: '
+    _codec = '|  + Codec ID: '
+    _lang = '|  + Language: '
     _duration = '|  + Default duration: '
-    _fps_re = re.compile(r'\((.*?) frames/fields per second for a video track\)')
+    fps = r'\((.*?) frames/fields per second for a video track\)'
+    _fps_re = re.compile(fps)
 
     def __init__(self, infodict):
         self._info = infodict
@@ -113,7 +115,8 @@ def infostring(mkv, env=None, arguments=[], errorfunc=sys.exit, mkvinfo=None):
     locale, since that is what *infodict* requires. See
     *info_locale_opts*.
     """
-    if not mkvinfo: mkvinfo = 'mkvinfo'
+    if not mkvinfo:
+        mkvinfo = 'mkvinfo'
     cmd = [mkvinfo] + arguments + [mkv]
     opts = {}
     if env is not None:
@@ -132,21 +135,21 @@ def infostring(mkv, env=None, arguments=[], errorfunc=sys.exit, mkvinfo=None):
 def infodict(lines):
     """Take a list of *lines* of ``locale='en_US'`` mkvinfo output and return a
     dictionary of info."""
-    inf = {'lines': lines}
-    handlers = [MainLineHandler(inf)]
+    infod = {'lines': lines}
+    handlers = [MainLineHandler(infod)]
     for l in lines:
         while not handlers[-1].line(handlers, l):
             if not handlers:
                 break
         if not handlers:
             break
-    return inf
+    return infod
 
 
 if __name__ == '__main__':
     from pprint import pprint
     mkv = sys.argv[1]
     s = infostring(mkv, arguments=['--ui-language', 'en_US'])
-    d = infodict(inf.rstrip('\n').split('\n'))
+    d = infodict(s.rstrip('\n').split('\n'))
     del d['lines']
     pprint(d)

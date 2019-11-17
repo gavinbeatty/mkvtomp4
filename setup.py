@@ -1,7 +1,6 @@
 import sys
-import os
 import subprocess as sp
-from distutils.core import setup, Command
+from distutils.core import setup
 from simplemkv.tomp4 import __doc__
 try:
     from simplemkv.version import __version__
@@ -66,24 +65,28 @@ def git_version():
 
 if sys.version_info < (2, 3):
     _setup = setup
+
     def setup(**kwargs):
         if kwargs.has_key("classifiers"):
             del kwargs["classifiers"]
         _setup(**kwargs)
 
-
 doclines_ = __doc__.split("\n")
+if sys.version_info < (3,):
+    classifiersval = filter(None, classifiers.split("\n"))
+else:
+    classifiersval = classifiers.split("\n")
 codeopts = {
     'name': 'mkvtomp4',
     'description': doclines_[0],
     'long_description': "\n".join(doclines_[2:]),
     'author': 'Gavin Beatty',
-    'author_email': 'gavinbeatty@gmail.com',
+    'author_email': 'public@gavinbeatty.com',
     'maintainer': 'Gavin Beatty',
-    'maintainer_email': 'gavinbeatty@gmail.com',
+    'maintainer_email': 'public@gavinbeatty.com',
     'license': 'http://opensource.org/licenses/MIT',
     'platforms': ["any"],
-    'classifiers': filter(None, classifiers.split("\n")),
+    'classifiers': classifiersval,
     'url': 'https://github.com/gavinbeatty/mkvtomp4/',
     'version': __version__,
     'scripts': ['mkvtomp4.py'],

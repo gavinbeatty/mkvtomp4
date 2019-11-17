@@ -1,5 +1,9 @@
 RM = rm -f
 PANDOC = pandoc
+FIND = find
+PEP8 = pep8
+PYCODESTYLE = pycodestyle
+PYFLAKES = pyflakes
 
 default: doc
 .PHONY: default
@@ -19,13 +23,16 @@ clean-doc:
 	$(RM) doc/$(PROJECT).1 doc/$(PROJECT).1.html doc/$(PROJECT).txt
 .PHONY: clean-doc
 clean-pyc:
-	find . -name '*.pyc' -print0 | xargs -0 rm -f
+	$(FIND) . -name '*.pyc' -print0 | xargs -0 $(RM)
+	$(FIND) . -name '__pycache__' -prune -print0 | xargs -0 $(RM) -r
 .PHONY: clean-pyc
 clean: clean-doc clean-pyc
 .PHONY: clean
 
 pep8:
-	@find . -name '*.py' -print0 | xargs -0 pep8
+	@$(FIND) . -name '*.py' -print0 | xargs -0 $(PEP8)
+pycodestyle:
+	@$(FIND) . -name '*.py' -print0 | xargs -0 $(PYCODESTYLE)
 pyflakes:
-	@find . -name '*.py' -print0 | xargs -0 pyflakes
+	@$(FIND) . -name '*.py' -print0 | xargs -0 $(PYFLAKES)
 .PHONY: pep8 pyflakes

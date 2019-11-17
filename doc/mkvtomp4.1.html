@@ -39,7 +39,7 @@
 <dt>--keep-temp-files</dt>
 <dd>Keep all temporary files created while converting.
 </dd>
-<dt>-v, –verbose</dt>
+<dt>-v, --verbose</dt>
 <dd>Print info about what is happening.
 </dd>
 <dt>-n, --dry-run</dt>
@@ -70,7 +70,7 @@
 <dd>Use <code>&lt;audio_track&gt;</code> from the mkv file instead of trying to parse it.
 </dd>
 <dt>--audio-delay-ms=&lt;delay_ms&gt;</dt>
-<dd>When importing the audio track, delay by <code>&lt;delay_ms&gt;</code> milliseconds. e.g., <code>--audio-delay-ms</code>=<code>1000</code> delays by 1 second. Not supported by mp4creator.
+<dd>When importing the audio track, delay by <code>&lt;delay_ms&gt;</code> milliseconds. e.g., <code>--audio-delay-ms</code>=<code>1000</code> delays by 1 second. Only supported by mp4box.
 </dd>
 <dt>--audio-bitrate=&lt;bitrate&gt;</dt>
 <dd>If/When converting audio, use the given bitrate. e.g., <code>128</code>.
@@ -79,9 +79,9 @@
 <dd>If/When converting audio, use <code>&lt;channels&gt;</code> channels in the output. e.g., <code>5.1</code>.
 </dd>
 <dt>--audio-codec=&lt;codec&gt;</dt>
-<dd>If/When converting audio, convert to <code>&lt;codec&gt;</code>. Default is <code>libfaac</code>. This should be something supported by <em>ffmpeg</em>.
+<dd>If/When converting audio, convert to <code>&lt;codec&gt;</code>. Default is <code>aac</code>. This should be something supported by <em>ffmpeg</em>.
 </dd>
-<dt>–correct-profile-only</dt>
+<dt>--correct-profile-only</dt>
 <dd>Only correct the profile
 </dd>
 <dt>--stop-before-extract-video</dt>

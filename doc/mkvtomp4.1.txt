@@ -34,7 +34,7 @@ We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
 \--keep-temp-files
 :   Keep all temporary files created while converting.
 
--v, --verbose
+-v, \--verbose
 :   Print info about what is happening.
 
 -n, \--dry-run
@@ -68,7 +68,7 @@ We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
 \--audio-delay-ms=\<delay_ms>
 :   When importing the audio track, delay by `<delay_ms>` milliseconds.
     e.g., `--audio-delay-ms`=`1000` delays by 1 second.
-    Not supported by mp4creator.
+    Only supported by mp4box.
 
 \--audio-bitrate=\<bitrate>
 :   If/When converting audio, use the given bitrate. e.g., `128`.
@@ -77,10 +77,10 @@ We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
 :   If/When converting audio, use `<channels>` channels in the output. e.g., `5.1`.
 
 \--audio-codec=\<codec>
-:   If/When converting audio, convert to `<codec>`. Default is `libfaac`. This
+:   If/When converting audio, convert to `<codec>`. Default is `aac`. This
     should be something supported by *ffmpeg*.
 
---correct-profile-only
+\--correct-profile-only
 :   Only correct the profile
 
 \--stop-before-extract-video

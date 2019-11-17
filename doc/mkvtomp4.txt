@@ -42,7 +42,7 @@ OPTIONS
 --keep-temp-files
     Keep all temporary files created while converting.
 
--v, –verbose
+-v, --verbose
     Print info about what is happening.
 
 -n, --dry-run
@@ -75,8 +75,8 @@ OPTIONS
 
 --audio-delay-ms=<delay_ms>
     When importing the audio track, delay by <delay_ms> milliseconds.
-    e.g., --audio-delay-ms=1000 delays by 1 second. Not supported by
-    mp4creator.
+    e.g., --audio-delay-ms=1000 delays by 1 second. Only supported by
+    mp4box.
 
 --audio-bitrate=<bitrate>
     If/When converting audio, use the given bitrate. e.g., 128.
@@ -86,10 +86,10 @@ OPTIONS
     e.g., 5.1.
 
 --audio-codec=<codec>
-    If/When converting audio, convert to <codec>. Default is libfaac.
-    This should be something supported by _ffmpeg_.
+    If/When converting audio, convert to <codec>. Default is aac. This
+    should be something supported by _ffmpeg_.
 
-–correct-profile-only
+--correct-profile-only
     Only correct the profile
 
 --stop-before-extract-video

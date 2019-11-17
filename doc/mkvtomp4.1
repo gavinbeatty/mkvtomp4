@@ -29,7 +29,7 @@ Put the completed mp4 into \f[C]<outfile>\f[R].
 .B --keep-temp-files
 Keep all temporary files created while converting.
 .TP
-.B -v, \[en]verbose
+.B -v, --verbose
 Print info about what is happening.
 .TP
 .B -n, --dry-run
@@ -67,7 +67,7 @@ it.
 When importing the audio track, delay by \f[C]<delay_ms>\f[R]
 milliseconds.
 e.g., \f[C]--audio-delay-ms\f[R]=\f[C]1000\f[R] delays by 1 second.
-Not supported by mp4creator.
+Only supported by mp4box.
 .TP
 .B --audio-bitrate=<bitrate>
 If/When converting audio, use the given bitrate.
@@ -80,10 +80,10 @@ e.g., \f[C]5.1\f[R].
 .TP
 .B --audio-codec=<codec>
 If/When converting audio, convert to \f[C]<codec>\f[R].
-Default is \f[C]libfaac\f[R].
+Default is \f[C]aac\f[R].
 This should be something supported by \f[I]ffmpeg\f[R].
 .TP
-.B \[en]correct-profile-only
+.B --correct-profile-only
 Only correct the profile
 .TP
 .B --stop-before-extract-video

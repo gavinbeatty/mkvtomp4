@@ -182,7 +182,7 @@ def mp4_add_audio_optimize_cmd(mp4file, audio, **opts):
             mp4file + '.mp4'
         ]
     else:
-        raise RuntimeError('Unknown mp4 option: {}'.format(opts['mp4']))
+        raise RuntimeError('Unknown mp4 option: ' + opts['mp4'])
 
 
 def mp4_add_hint_cmd(mp4file, **opts):
@@ -191,7 +191,7 @@ def mp4_add_hint_cmd(mp4file, **opts):
     elif opts['mp4'] in ('mp4box', 'ffmpeg'):
         return None
     else:
-        raise RuntimeError('Unknown mp4 option: {}'.format(opts['mp4']))
+        raise RuntimeError('Unknown mp4 option: ' + opts['mp4'])
 
 
 def mp4_add_video_cmd(mp4file, video, fps, **opts):
@@ -213,7 +213,7 @@ def mp4_add_video_cmd(mp4file, video, fps, **opts):
             '-f', 'mp4', mp4file
         ]
     else:
-        raise RuntimeError('Unknown mp4 option: {}'.format(opts['mp4']))
+        raise RuntimeError('Unknown mp4 option: ' + opts['mp4'])
 
 
 def ffmpeg_convert_audio_cmd(old, new, **opts):
@@ -272,7 +272,7 @@ def real_main(mkvfile, **opts):
     try:
         tracks = info['tracks']
     except Exception:
-        sys.exit('No tracks key in [{}]'.format(','.join(info)))
+        sys.exit('No tracks key in [' + ','.join(info) + ']')
         raise
 
     def get_track(typ, codec_re):
@@ -406,7 +406,7 @@ def usage(**kwargs):
     p(' --audio-bitrate=<audio-bitrate>:')
     p('  Use this audio bitrate.')
     p(' --audio-channels=<audio-channels>:')
-    p('  Use this many audio channel.')
+    p('  Use this many audio channels.')
     p(' --audio-codec=<audio-codec>:')
     p('  Use this audio codec.')
     p(' -o <output>|--output=<output>:')

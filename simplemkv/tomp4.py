@@ -170,6 +170,13 @@ def mp4_add_audio_optimize_cmd(mp4file, audio, **opts):
             opts.get('mp4box', 'MP4Box'),
             '-add', audio + '#audio:trackID=2' + delay, mp4file
         ]
+    elif opts['mp4'] == 'ffmpeg':
+        return [
+            opts.get('ffmpeg', 'ffmpeg'),
+            '-i', mp4file,
+            '-i', audio, '-codec', 'copy', '-shortest',
+            mp4file + '.mp4'
+        ]
     else:
         raise RuntimeError('Unknown mp4 option: {}'.format(opts['mp4']))
 
@@ -177,7 +184,7 @@ def mp4_add_audio_optimize_cmd(mp4file, audio, **opts):
 def mp4_add_hint_cmd(mp4file, **opts):
     if opts['mp4'] == 'mp4creator':
         return [opts.get('mp4creator', 'mp4creator'), '-hint=1', mp4file]
-    elif opts['mp4'] == 'mp4box':
+    elif opts['mp4'] in ('mp4box', 'ffmpeg'):
         return None
     else:
         raise RuntimeError('Unknown mp4 option: {}'.format(opts['mp4']))
@@ -193,6 +200,13 @@ def mp4_add_video_cmd(mp4file, video, fps, **opts):
         return [
             opts.get('mp4box', 'MP4Box'), '-add',
             video + '#video:trackID=1', '-hint', '-fps', str(fps), mp4file,
+        ]
+    elif opts['mp4'] == 'ffmpeg':
+        return [
+            opts.get('ffmpeg', 'ffmpeg'),
+            # '-framerate', str(fps),
+            '-i', video, '-c:v', 'copy',
+            '-f', 'mp4', mp4file
         ]
     else:
         raise RuntimeError('Unknown mp4 option: {}'.format(opts['mp4']))
@@ -363,6 +377,8 @@ def usage(**kwargs):
     p('  Use mp4box when packaging the mp4.')
     p(' --use-mp4creator:')
     p('  Use mp4creator when packaging the mp4.')
+    p(' --use-ffmpeg:')
+    p('  Use ffmpeg when packaging the mp4.')
     p(' --mp4box=<mp4box>:')
     p('  Use this <mp4box> command.')
     p(' --mp4creator=<mp4creator>:')
@@ -419,7 +435,7 @@ def parseopts(argv=None):
             [
                 'help', 'usage', 'version', 'verbose',
                 'mp4box=', 'mp4creator=', 'ffmpeg=', 'mkvinfo=', 'mkvextract=',
-                'use-mp4box', 'use-mp4creator',
+                'use-mp4box', 'use-mp4creator', 'use-ffmpeg',
                 'video-track=', 'audio-track=',
                 'audio-delay-ms=', 'audio-bitrate=', 'audio-channels=',
                 'audio-codec=',
@@ -446,20 +462,22 @@ def parseopts(argv=None):
             sys.exit(0)
         elif opt in ('-v', '--verbose'):
             opts['verbosity'] = opts['verbosity'] + 1
-        elif opt == '--mp4creator':
-            opts['mp4creator'] = optarg
         elif opt == '--mp4box':
             opts['mp4box'] = optarg
+        elif opt == '--mp4creator':
+            opts['mp4creator'] = optarg
         elif opt == '--ffmpeg':
             opts['ffmpeg'] = optarg
         elif opt == '--mkvinfo':
             opts['mkvinfo'] = optarg
         elif opt == '--mkvextract':
             opts['mkvextract'] = optarg
-        elif opt == '--use-mp4creator':
-            opts['mp4'] = 'mp4creator'
         elif opt == '--use-mp4box':
             opts['mp4'] = 'mp4box'
+        elif opt == '--use-mp4creator':
+            opts['mp4'] = 'mp4creator'
+        elif opt == '--use-ffmpeg':
+            opts['mp4'] = 'ffmpeg'
         elif opt == '--video-track':
             opts['video_track'] = optarg
         elif opt == '--audio-track':

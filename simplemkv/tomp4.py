@@ -146,7 +146,7 @@ def default_options(argv0):
         'stop_v_mp4': False,
         'stop_hint_mp4': False,
         'stop_a_mp4': False,
-        'mp4': 'mp4creator',
+        'mp4': 'mp4box',
         'mp4creator': 'mp4creator',
         'mp4box': 'MP4Box',
         'ffmpeg': 'ffmpeg',

@@ -12,6 +12,7 @@ import re
 import getopt
 import subprocess as sp
 import struct
+import traceback
 import pipes
 
 import simplemkv.info
@@ -102,8 +103,10 @@ def command(cmd, **kwargs):
         proc = sp.Popen(
             cmd, stdout=sp.PIPE, stderr=sp.PIPE, close_fds=True, **spopts
         )
-    except OSError, e:
-        die('command failed:', str(e), ':', sq(cmd))
+    except OSError:
+        et, ev, tb = sys.exc_info()
+        estr = traceback.format_exception_only(et, ev)
+        die('command failed:', estr, ':', sq(cmd))
     chout, cherr = proc.communicate()
     vprint(1, 'command: stdout:', chout, '\ncommand: stderr:', cherr)
     if proc.returncode != 0:
@@ -431,30 +434,30 @@ def usage(**kwargs):
     p(' --no-summary:')
     p('  Don\'t provide a summary.')
 
+
 def parseopts(argv=None):
     opts = default_options(argv[0])
+    sopts = 'hvo:n'
+    lopts = [
+        'help', 'usage', 'version', 'verbose',
+        'mp4box=', 'mp4creator=', 'ffmpeg=', 'mkvinfo=', 'mkvextract=',
+        'use-mp4box', 'use-mp4creator', 'use-ffmpeg',
+        'video-track=', 'audio-track=',
+        'audio-delay-ms=', 'audio-bitrate=', 'audio-channels=',
+        'audio-codec=',
+        'output=', 'keep-temp-files', 'dry-run',
+        'correct-profile-only',
+        'stop-before-extract-video', 'stop-before-correct-profile',
+        'stop-before-extract-audio', 'stop-before-convert-audio',
+        'stop-before-video-mp4', 'stop-before-hinting-mp4',
+        'stop-before-audio-mp4',
+        'no-summary',
+    ]
     try:
-        options, arguments = getopt.gnu_getopt(
-            argv[1:],
-            'hvo:n',
-            [
-                'help', 'usage', 'version', 'verbose',
-                'mp4box=', 'mp4creator=', 'ffmpeg=', 'mkvinfo=', 'mkvextract=',
-                'use-mp4box', 'use-mp4creator', 'use-ffmpeg',
-                'video-track=', 'audio-track=',
-                'audio-delay-ms=', 'audio-bitrate=', 'audio-channels=',
-                'audio-codec=',
-                'output=', 'keep-temp-files', 'dry-run',
-                'correct-profile-only',
-                'stop-before-extract-video', 'stop-before-correct-profile',
-                'stop-before-extract-audio', 'stop-before-convert-audio',
-                'stop-before-video-mp4', 'stop-before-hinting-mp4',
-                'stop-before-audio-mp4',
-                'no-summary',
-            ]
-        )
-    except getopt.GetoptError, err:
-        die(str(err))
+        options, arguments = getopt.gnu_getopt(argv[1:], sopts, lopts)
+    except getopt.GetoptError:
+        et, ev, tb = sys.exc_info()
+        die(traceback.format_exception_only(et, ev))
     for opt, optarg in options:
         if opt in ('-h', '--help'):
             usage()

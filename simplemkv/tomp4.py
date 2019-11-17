@@ -172,7 +172,7 @@ def mp4_add_audio_optimize_cmd(mp4file, audio, **opts):
             delay = ''
         return [
             opts.get('mp4box', 'MP4Box'),
-            '-add', audio + '#audio:trackID=2' + delay, mp4file
+            '-add', audio + '#audio' + delay, mp4file
         ]
     elif opts['mp4'] == 'ffmpeg':
         return [
@@ -203,7 +203,8 @@ def mp4_add_video_cmd(mp4file, video, fps, **opts):
     elif opts['mp4'] == 'mp4box':
         return [
             opts.get('mp4box', 'MP4Box'), '-add',
-            video + '#video:trackID=1', '-hint', '-fps', str(fps), mp4file,
+            video + '#video', '-new',
+            '-hint', '-fps', str(fps), mp4file,
         ]
     elif opts['mp4'] == 'ffmpeg':
         return [

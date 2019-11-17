@@ -36,7 +36,10 @@ def git_version():
     cmd = ['git', 'describe', '--abbrev=4']
     try:
         proc = sp.Popen(cmd, stdout=sp.PIPE)
-        stdout = proc.communicate()[0].rstrip('\n')
+        stdouts = proc.communicate()[0]
+        if stdouts is not str:
+            stdouts = stdouts.decode('utf_8')
+        stdout = stdouts.rstrip('\n')
     except OSError:
         sys.stderr.write('git not found: leaving __version__ alone\n')
         return __version__
@@ -53,8 +56,11 @@ def git_version():
     if proc.returncode != 0:
         return ver
     try:
-        proc = sp.Popen(['git', 'diff-index', '--name-only', 'HEAD', '--'], stdout=sp.PIPE)
+        gitdiff = ['git', 'diff-index', '--name-only', 'HEAD', '--']
+        proc = sp.Popen(gitdiff, stdout=sp.PIPE)
         stdout = proc.communicate()[0]
+        if stdout is not str:
+            stdout = stdout.decode('utf_8')
     except OSError:
         sys.stderr.write('git diff-index failed\n')
     if stdout.strip('\n'):

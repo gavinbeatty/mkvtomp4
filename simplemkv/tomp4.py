@@ -131,7 +131,7 @@ def default_options(argv0):
         'verbosity': 0,
         'a_bitrate': '328',
         'a_channels': '5.1',
-        'a_codec': 'libfaac',
+        'a_codec': 'aac',
         'a_delay': None,
         'output': None,
         'video_track': None,
@@ -198,7 +198,7 @@ def mp4_add_video_cmd(mp4file, video, fps, **opts):
 def ffmpeg_convert_audio_cmd(old, new, **opts):
     bitrate = opts.get('bitrate', '128')
     channels = opts.get('channels', '2')
-    codec = opts.get('codec', 'libfaac')
+    codec = opts.get('a_codec', 'aac')
     verbosity = opts.get('verbosity', 0)
     if str(channels) == '5.1':
         channels = '6'
@@ -287,6 +287,8 @@ def real_main(mkvfile, **opts):
         # Correct profile
         dry_correct_rawmp4_profile(video, **opts)
         a_codec = audiotrack['codec']
+        if a_codec.lower().startswith('a_'):
+            a_codec = a_codec[2:]
         audio = mkvfile + '.' + a_codec.lower()
         exit_if(opts['stop_a_ex'])
         # Extract audio
@@ -299,7 +301,7 @@ def real_main(mkvfile, **opts):
         dry_command(extract_cmd, **opts)
         exit_if(opts['stop_a_conv'])
         # Convert audio
-        if str(a_codec).lower() != 'aac':
+        if str(a_codec).lower() not in ('a_aac', 'aac'):
             aacaudio, oldaudio = audio + '.aac', audio
             audio_cmd = ffmpeg_convert_audio_cmd(oldaudio, aacaudio, **opts)
             tempfiles.append(aacaudio)

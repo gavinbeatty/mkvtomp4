@@ -217,8 +217,8 @@ def mp4_add_video_cmd(mp4file, video, fps, **opts):
 
 
 def ffmpeg_convert_audio_cmd(old, new, **opts):
-    bitrate = opts.get('bitrate', '128')
-    channels = opts.get('channels', '2')
+    bitrate = opts.get('a_bitrate', '128')
+    channels = opts.get('a_channels', '2')
     codec = opts.get('a_codec', 'aac')
     verbosity = opts.get('verbosity', 0)
     if str(channels) == '5.1':
@@ -279,7 +279,7 @@ def real_main(mkvfile, **opts):
         number = opts.get(typ + '_track', None)
         if number is not None:
             try:
-                track = tracks[number]
+                return tracks[number]
             except IndexError:
                 die('track %d not found: %s' % (number, str(tracks)))
             if not codec_re.search(track['codec']):
@@ -287,18 +287,24 @@ def real_main(mkvfile, **opts):
         else:
             types = [
                 t for t in tracks
-                if t['type'] == typ  # and codec_re.search(t['codec'])
+                if t['type'] == typ and codec_re.search(t['codec'])
             ]
             if not types:
                 die('appropriate %s track not found: %s' % (typ, str(tracks)))
             return types[0]
-    videotrack = get_track('video', re.compile(r'^(?!V_)?MPEG4/ISO/AVC\b'))
-    audiotrack = get_track('audio', re.compile(r'^(?!A_)?(?!DTS|AAC|AC3)\b'))
+    videotrack = get_track('video', re.compile(r'^(V_)?(MPEG4/ISO/AVC|MPEGH/ISO/HEVC)$'))
+    audiotrack = get_track('audio', re.compile(r'^(A_)?(DTS|AAC|AC3)$'))
     tempfiles = []
     succeeded = False
     try:
         # Extract video
-        video = mkvfile + '.h264'
+        if videotrack['codec'] in ('MPEG4/ISO/AVC', 'V_MPEG4/ISO/AVC'):
+            ext = '.h264'
+        elif videotrack['codec'] in ('MPEGH/ISO/HEVC', 'V_MPEGH/ISO/HEVC'):
+            ext = '.h265'
+        else:
+            raise RuntimeError('Unknown extension for codec: ' + videotrack['codec'])
+        video = mkvfile + ext
         exit_if(opts['stop_v_ex'])
         extract_cmd = mkv_extract_track_cmd(
             mkvfile, out=video, track=videotrack['number'],

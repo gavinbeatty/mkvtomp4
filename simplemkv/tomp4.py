@@ -149,6 +149,7 @@ def default_options(argv0):
         'mp4': 'mp4creator',
         'mp4creator': 'mp4creator',
         'mp4box': 'MP4Box',
+        'ffmpeg': 'ffmpeg',
         'summary': True,
     }
 
@@ -193,6 +194,8 @@ def mp4_add_video_cmd(mp4file, video, fps, **opts):
             opts.get('mp4box', 'MP4Box'), '-add',
             video + '#video:trackID=1', '-hint', '-fps', str(fps), mp4file,
         ]
+    else:
+        raise RuntimeError('Unknown mp4 option: {}'.format(opts['mp4']))
 
 
 def ffmpeg_convert_audio_cmd(old, new, **opts):
@@ -202,10 +205,11 @@ def ffmpeg_convert_audio_cmd(old, new, **opts):
     verbosity = opts.get('verbosity', 0)
     if str(channels) == '5.1':
         channels = '6'
+    ffmpeg = opts.get('ffmpeg', 'ffmpeg')
     if verbosity > 1:
-        cmd = ['ffmpeg', '-v', str(verbosity - 1)]
+        cmd = [ffmpeg, '-v', str(verbosity - 1)]
     else:
-        cmd = ['ffmpeg']
+        cmd = [ffmpeg]
     return cmd + [
         '-i', old, '-ac', str(channels), '-acodec', codec,
         '-ab', str(bitrate) + 'k', new
@@ -363,6 +367,8 @@ def usage(**kwargs):
     p('  Use this <mp4box> command.')
     p(' --mp4creator=<mp4creator>:')
     p('  Use this <mp4creator> command.')
+    p(' --ffmpeg=<ffmpeg>:')
+    p('  Use this <ffmpeg> command.')
     p(' --mkvinfo=<mkvinfo>:')
     p('  Use this <mkvinfo> command.')
     p(' --mkvextract=<mkvextract>:')
@@ -412,7 +418,7 @@ def parseopts(argv=None):
             'hvo:n',
             [
                 'help', 'usage', 'version', 'verbose',
-                'mp4box=', 'mp4creator=', 'mkvinfo=', 'mkvextract=',
+                'mp4box=', 'mp4creator=', 'ffmpeg=', 'mkvinfo=', 'mkvextract=',
                 'use-mp4box', 'use-mp4creator',
                 'video-track=', 'audio-track=',
                 'audio-delay-ms=', 'audio-bitrate=', 'audio-channels=',
@@ -444,6 +450,8 @@ def parseopts(argv=None):
             opts['mp4creator'] = optarg
         elif opt == '--mp4box':
             opts['mp4box'] = optarg
+        elif opt == '--ffmpeg':
+            opts['ffmpeg'] = optarg
         elif opt == '--mkvinfo':
             opts['mkvinfo'] = optarg
         elif opt == '--mkvextract':

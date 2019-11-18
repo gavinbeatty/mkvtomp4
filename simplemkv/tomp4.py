@@ -13,7 +13,10 @@ import getopt
 import subprocess as sp
 import struct
 import traceback
-import pipes
+try:
+    from shlex import quote
+except:
+    from pipes import quote
 
 import simplemkv.info
 
@@ -83,7 +86,7 @@ def onlykeys(d, keys):
 def __sq(one):
     if one == '':
         return "''"
-    return pipes.quote(str(one))
+    return quote(str(one))
 
 
 def sq(args):
@@ -235,26 +238,26 @@ def ffmpeg_convert_audio_cmd(old, new, **opts):
     ]
 
 
-def pretend_correct_rawmp4_profile(rawmp4, argv0):
-    prin(sq([argv0, '--correct-profile-only', rawmp4]))
+def pretend_correct_rawh264_profile(rawh264, argv0):
+    prin(sq([argv0, '--correct-profile-only', rawh264]))
 
 
-def correct_rawmp4_profile(rawmp4):
+def correct_rawh264_profile(rawh264):
     level_string = struct.pack('b', int('29', 16))
-    f = open(rawmp4, 'r+b')
+    f = open(rawh264, 'r+b')
     try:
         f.seek(7)
-        vprint(1, 'correcting profile:', rawmp4)
+        vprint(1, 'correcting profile:', rawh264)
         f.write(level_string)
     finally:
         f.close()
 
 
-def dry_correct_rawmp4_profile(rawmp4, **opts):
+def dry_correct_rawh264_profile(rawh264, **opts):
     if opts['dry_run']:
-        pretend_correct_rawmp4_profile(rawmp4, opts['argv0'])
+        pretend_correct_rawh264_profile(rawh264, opts['argv0'])
     else:
-        correct_rawmp4_profile(rawmp4)
+        correct_rawh264_profile(rawh264)
 
 
 def mkv_extract_track_cmd(mkv, out, track, verbosely=False, mkvextract=None):
@@ -315,8 +318,8 @@ def real_main(mkvfile, **opts):
         tempfiles.append(video)
         dry_command(extract_cmd, **opts)
         exit_if(opts['stop_correct'])
-        # Correct profile
-        dry_correct_rawmp4_profile(video, **opts)
+        if video.endswith('h264'):
+            dry_correct_rawh264_profile(video, **opts)
         a_codec = audiotrack['codec']
         if a_codec.lower().startswith('a_'):
             a_codec = a_codec[2:]
@@ -541,7 +544,7 @@ def main(argv=None):
     if opts['a_delay'] is not None and opts['mp4'] == 'mp4creator':
         die("Cannot use --audio-delay-ms with mp4creator. Try --use-mp4box")
     if opts['correct_prof_only']:
-        dry_correct_rawmp4_profile(args[0], **opts)
+        dry_correct_rawh264_profile(args[0], **opts)
     else:
         if opts['summary'] and not opts['dry_run']:
             keep, dry_run = opts['keep_temp_files'], opts['dry_run']

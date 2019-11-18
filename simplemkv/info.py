@@ -128,7 +128,11 @@ def infostring(mkv, env=None, arguments=[], errorfunc=sys.exit, mkvinfo=None):
     )
     out, err = proc.communicate()
     if proc.returncode != 0:
+        if err is not str:
+            err = err.decode('utf_8')
         errorfunc('command failed: ' + err.rstrip('\n'))
+    if out is not str:
+        out = out.decode('utf_8')
     return out
 
 

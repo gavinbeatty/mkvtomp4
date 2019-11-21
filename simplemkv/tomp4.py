@@ -111,6 +111,10 @@ def command(cmd, **kwargs):
         estr = traceback.format_exception_only(et, ev)
         die('command failed:', estr, ':', sq(cmd))
     chout, cherr = proc.communicate()
+    if chout is not str:
+        chout = chout.decode('utf_8')
+    if cherr is not str:
+        cherr = cherr.decode('utf_8')
     vprint(1, 'command: stdout:', chout, '\ncommand: stderr:', cherr)
     if proc.returncode != 0:
         die('failure: %s' % cherr, end='')
@@ -297,7 +301,7 @@ def real_main(mkvfile, **opts):
                 die('appropriate %s track not found: %s' % (typ, str(tracks)))
             return types[0]
     videotrack = get_track('video', re.compile(r'^(V_)?(MPEG4/ISO/AVC|MPEGH/ISO/HEVC)$'))
-    audiotrack = get_track('audio', re.compile(r'^(A_)?(DTS|AAC|AC3)$'))
+    audiotrack = get_track('audio', re.compile(r'^(A_)?(DTS|AAC|E?AC3)$'))
     tempfiles = []
     succeeded = False
     try:
@@ -367,6 +371,12 @@ def real_main(mkvfile, **opts):
         if opts['mp4'] == 'ffmpeg':
             mvcmd = ['mv', opts['output'] + '.mp4', opts['output']]
             dry_command(mvcmd, **opts)
+        # TODO: subtitles with:
+        # ffmpeg -i v.mp4 -i s.srt -c:v copy -c:a copy \
+        #   -c:s mov_text -metadata:s:s:0 language=eng \
+        #   -disposition:s:0 default o.mp4
+        # The disposition default stuff turns on subs by default.
+        # Hard sub with: ffmpeg -i v.mp4 -vf subtitles=s.srt o.mp4
         succeeded = True
     finally:
         if not succeeded:

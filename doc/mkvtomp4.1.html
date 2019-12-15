@@ -29,8 +29,8 @@
 <p><em>mkvtomp4.py</em> <a href="#options">OPTIONS</a> [--] &lt;mkvfile&gt;</p>
 <p><em>mkvtomp4.py</em> --correct-profile-only [--] &lt;rawh264file&gt;</p>
 <h1 id="description">DESCRIPTION</h1>
-<p>Uses existing tools to convert troublesome mkv files to mp4. The conversion does not re-encode the video and only re-encodes the audio if it doesn’t use AAC codec (one can override this behaviour using <code>--audio-codec</code>). The resulting mp4 will be playable on the Sony PS3.</p>
-<p>We depend on: <em>mkvtoolnix</em>, <em>mpeg4ip</em> or GPAC’s <em>MP4Box</em> for the conversion. <em>ffmpeg</em> is optional but required for audio transcoding.</p>
+<p>Uses existing tools to convert troublesome mkv files to mp4, that is playable on the PS3. The conversion does not re-encode the video, even if the H.264 profile is not supported by the PS3. Instead, the H.264 profile is edited to be playable by rewriting just a few bytes. The conversion only re-encodes the audio if it doesn’t use AAC codec (one can override this behaviour using <code>--audio-codec</code>). The resulting mp4 will be playable on the Sony PS3.</p>
+<p>We depend on: <em>mkvtoolnix</em> and GPAC’s <em>MP4Box</em> for the conversion. <em>ffmpeg</em> is optional but required if doing audio transcoding and subtitles.</p>
 <h1 id="options">OPTIONS</h1>
 <dl>
 <dt>-o, --output=&lt;outfile&gt;</dt>
@@ -45,14 +45,8 @@
 <dt>-n, --dry-run</dt>
 <dd>Don’t run any commands, but print them in a shellquoted format that can be safely copy-pasted by the user.
 </dd>
-<dt>--use-mp4creator, --use-mp4box, --use-ffmpeg</dt>
-<dd>Specify which mp4 backend to use. mp4box is the default.
-</dd>
-<dt>--mp4creator=&lt;mp4creator&gt;</dt>
-<dd>Use <code>&lt;mp4creator&gt;</code> as the mp4creator command.
-</dd>
 <dt>--mp4box=&lt;mp4box&gt;</dt>
-<dd>Use <code>&lt;mp4box&gt;</code> as the mp4box command.
+<dd>Use <code>&lt;mp4box&gt;</code> as the MP4Box command.
 </dd>
 <dt>--ffmpeg=&lt;ffmpeg&gt;</dt>
 <dd>Use <code>&lt;ffmpeg&gt;</code> as the ffmpeg command.
@@ -81,6 +75,18 @@
 <dt>--audio-codec=&lt;codec&gt;</dt>
 <dd>If/When converting audio, convert to <code>&lt;codec&gt;</code>. Default is <code>aac</code>. This should be something supported by <em>ffmpeg</em>.
 </dd>
+<dt>--audio-lang=&lt;language&gt;</dt>
+<dd>The 3-letter code for the language of the audio track. Only needs to be set if not already specified in the source.
+</dd>
+<dt>--subtitle-track=&lt;subtitle_track&gt;</dt>
+<dd>Use <code>&lt;subtitle_track&gt;</code> from the mkv file instead of trying to parse it.
+</dd>
+<dt>--subtitle-lang=&lt;language&gt;</dt>
+<dd>The 3-letter code for the language of the subtitle track. Only needs to be set if not already specified in the source.
+</dd>
+<dt>--subtitle-default, --subtitle-no-default</dt>
+<dd>Specify whether playback should use the subtitles by default.
+</dd>
 <dt>--correct-profile-only</dt>
 <dd>Only correct the profile
 </dd>
@@ -96,14 +102,14 @@
 <dt>--stop-before-convert-audio</dt>
 <dd>Exit before converting audio previously extracted. This will stop even if the audio does not need to be converted.
 </dd>
-<dt>--stop-before-video-mp4</dt>
-<dd>Exit before adding the extracted video to the mp4 container.
+<dt>--stop-before-extract-sub</dt>
+<dd>Exit before extracting subtitles from <code>&lt;mkvfile&gt;</code>.
 </dd>
-<dt>--stop-before-hinting-mp4</dt>
-<dd>Exit before hinting the mp4 file with the video track.
+<dt>--stop-before-mp4</dt>
+<dd>Exit before adding audio and video to the mp4 container.
 </dd>
-<dt>--stop-before-audio-mp4</dt>
-<dd>Exit before adding the extracted (and possibly converted) audio to the mp4 container.
+<dt>--stop-before-add-sub</dt>
+<dd>Exit before adding subtitles to the mp4.
 </dd>
 <dt>&lt;mkvfile&gt;</dt>
 <dd>The Matroska (.mkv) file you wish to convert.

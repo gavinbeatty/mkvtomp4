@@ -8,8 +8,8 @@ it doesn't use AAC codec (one can override this behaviour using
 `--audio-codec`).
 The resulting mp4 will be playable on the Sony PS3.
 
-We depend on: *mkvtoolnix*, *mpeg4ip* or GPAC's *MP4Box* for the conversion.
-*ffmpeg* is optional but required for audio transcoding.
+We depend on: *mkvtoolnix* and GPAC's *MP4Box* for the conversion.
+*ffmpeg* is optional but required if doing audio transcoding.
 
 Check the manual in `doc/mkvtomp4.1.txt`.
 
@@ -20,8 +20,8 @@ Dependencies
 Tools:
 
 * *mkvtoolnix*
-* *mpeg4ip* or GPAC's *MP4Box*
-* *ffmpeg*
+* GPAC's *MP4Box*
+* *ffmpeg* (optional)
 
 To install these tools:
 

@@ -59,6 +59,8 @@ class TrackLineHandler:
             return True
         codec = self._findvalue(cls._codec, l)
         if codec:
+            if codec[0] in ('V', 'A', 'S') and len(codec) > 1 and codec[1] == '_':
+                codec = codec[2:]
             self._track['codec'] = codec
             return True
         lang = self._findvalue(cls._lang, l)

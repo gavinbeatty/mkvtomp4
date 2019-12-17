@@ -45,7 +45,7 @@ def prin(*args, **kwargs):
     end = kwargs.get('end', '\n')
     if len(args) > 0:
         fobj.write(args[0])
-        if len(args) > 1:
+        if args[1:]:
             for arg in args[1:]:
                 fobj.write(sep + arg)
     fobj.write(end)
@@ -70,13 +70,9 @@ def wprint(*args, **kwargs):
     prin("warning:", *args, **kwargs)
 
 
-_verbosity = 0
-
-
 def vprint(level, *args, **kwargs):
-    global _verbosity
-    local = kwargs.get('verbosity', 0)
-    if _verbosity >= level or local >= level:
+    verbosity = kwargs.get('verbosity', 0)
+    if verbosity >= level:
         prin('verbose:', *args, **kwargs)
 
 
@@ -119,7 +115,7 @@ def command(cmd, **kwargs):
         chout = chout.decode('utf_8')
     if cherr is not str:
         cherr = cherr.decode('utf_8')
-    vprint(1, 'command: stdout:', chout, '\ncommand: stderr:', cherr)
+    vprint(1, 'command: stdout:', chout, '\ncommand: stderr:', cherr, **verbose_kwargs)
     if proc.returncode != 0:
         die('failure: %s' % cherr, end='')
     return chout
@@ -158,6 +154,8 @@ def default_options(argv0):
         'subtitles_track': None,
         'keep_temp_files': False,
         'dry_run': False,
+        'profile_level': '4.1',
+        'force_profile_level': False,
         'correct_prof_only': False,
         'stop_v_ex': False,
         'stop_correct': False,
@@ -209,26 +207,41 @@ def ffmpeg_convert_audio_cmd(old, new, **opts):
     ]
 
 
-def pretend_correct_rawh264_profile(rawh264, argv0):
-    prin(sq([argv0, '--correct-profile-only', rawh264]))
+def pretend_correct_rawh264_profile(rawh264, **opts):
+    cmd = [opts['argv0'], '--correct-profile-only', '--profile-level']
+    cmd.extend([opts.get('profile_level', '4.1')])
+    if opts.get('force_profile_level', False):
+        cmd.extend(['--force-profile-level'])
+    prin(sq(cmd + [rawh264]))
 
 
-def correct_rawh264_profile(rawh264):
-    level_string = struct.pack('b', int('29', 16))
+def correct_rawh264_profile(rawh264, **opts):
+    profile_str = opts.get('profile_level', '4.1')
+    profile = int(round(float(profile_str) * 10.0))
+    profile_bytes = struct.pack('b', profile)
     f = open(rawh264, 'r+b')
     try:
         f.seek(7)
-        vprint(1, 'correcting profile:', rawh264)
-        f.write(level_string)
+        existing_profile_bytes = f.read(1)
+        existing_profile = struct.unpack('b', existing_profile_bytes)[0]
+        existing_profile_str = str(existing_profile / 10.0)
+        if opts.get('force_profile_level', False) or existing_profile > profile:
+            f.seek(7)
+            vprint(1, 'correcting profile to ' + profile_str
+                    + ' from ' + existing_profile_str + ':', rawh264, **opts)
+            f.write(profile_bytes)
+        else:
+            vprint(1, 'leaving profile at ' + existing_profile_str
+                    + ' which is not greater than ' + profile_str + ':', rawh264, **opts)
     finally:
         f.close()
 
 
 def dry_correct_rawh264_profile(rawh264, **opts):
     if opts['dry_run']:
-        pretend_correct_rawh264_profile(rawh264, opts['argv0'])
+        pretend_correct_rawh264_profile(rawh264, **opts)
     else:
-        correct_rawh264_profile(rawh264)
+        correct_rawh264_profile(rawh264, **opts)
 
 
 def mkv_extract_track_cmd(mkv, out, track, verbosely=False, mkvextract=None):
@@ -282,7 +295,7 @@ def real_main(mkvfile, **opts):
                 return types[idx]
             return
     videore = re.compile(r'^(V_)?(MPEG4/ISO/AVC|MPEGH/ISO/HEVC)$')
-    audiore = re.compile(r'^(A_)?(DTS|AAC|E?AC3|MPEG/L2|VORBIS)$')
+    audiore = re.compile(r'^(A_)?(DTS|AAC|E?AC3|MPEG/L2|VORBIS|FLAC)$')
     subtitlesre = re.compile(r'^(S_)?(TEXT/UTF8|HDMV/PGS)$')
     videotrack = get_track('video', 0, videore, die)
     audiotrack = get_track('audio', 0, audiore, die)
@@ -474,6 +487,10 @@ def usage(**kwargs):
     p('  Don\'t actually run any commands.')
     p(' --correct-profile-only:')
     p('  Only correct the mp4 profile.')
+    p(' --profile-level=<profile-level>:')
+    p('  Rewrite the H.264 profile level if it\'s higher than this.')
+    p(' --force-profile-level, --no-force-profile-level:')
+    p('  Always rewrite the H.264 profile level, or not.')
     p(' --stop-before-extract-video:')
     p('  Don\'t do anything after extracting video.')
     p(' --stop-before-correct-profile:')
@@ -501,7 +518,8 @@ def parseopts(argv=None):
         'subtitle-track=', 'subtitle-lang=',
         'subtitle-default', 'subtitle-no-default',
         'output=', 'keep-temp-files', 'dry-run',
-        'correct-profile-only',
+        'correct-profile-only', 'profile-level=',
+        'force-profile-level', 'no-force-profile-level',
         'stop-before-extract-video', 'stop-before-correct-profile',
         'stop-before-extract-audio', 'stop-before-convert-audio',
         'stop-before-extract-sub',
@@ -568,6 +586,12 @@ def parseopts(argv=None):
             opts['dry_run'] = True
         elif opt == '--correct-profile-only':
             opts['correct_prof_only'] = True
+        elif opt == '--profile-level':
+            opts['profile_level'] = optarg
+        elif opt == '--force-profile-level':
+            opts['force_profile_level'] = True
+        elif opt == '--no-force-profile-level':
+            opts['force_profile_level'] = False
         elif opt == '--stop-before-extract-video':
             opts['stop_v_ex'] = True
         elif opt == '--stop-before-correct-profile':

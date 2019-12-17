@@ -16,10 +16,12 @@ Uses existing tools to convert troublesome mkv files to mp4, that is
 playable on the PS3.
 The conversion does not re-encode the video, even if the H.264 profile
 is not supported by the PS3.
-Instead, the H.264 profile is edited to be playable by rewriting just a
-few bytes.
-The conversion only re-encodes the audio if it doesn\[cq]t use AAC codec
-(one can override this behaviour using \f[C]--audio-codec\f[R]).
+If necessary, we rewrite the profile version number in the raw video
+stream.
+The default value is 4.1, but it can be set with
+\f[C]--profile-level=5.0\f[R], etc.
+For audio, the conversion only re-encodes if it doesn\[cq]t use AAC
+codec (one can override this behaviour using \f[C]--audio-codec\f[R]).
 The resulting mp4 will be playable on the Sony PS3.
 .PP
 We depend on: \f[I]mkvtoolnix\f[R] and GPAC\[cq]s \f[I]MP4Box\f[R] for
@@ -56,6 +58,9 @@ Use \f[C]<mkvextract>\f[R] as the mkvextract command.
 .B --video-track=<video_track>
 Use \f[C]<video_track>\f[R] from the mkv file instead of trying to parse
 it.
+.TP
+.B --hint, --no-hint
+Add info to the mp4 to make it easier to stream over the network.
 .TP
 .B --audio-track=<audio_track>
 Use \f[C]<audio_track>\f[R] from the mkv file instead of trying to parse
@@ -97,7 +102,16 @@ Only needs to be set if not already specified in the source.
 Specify whether playback should use the subtitles by default.
 .TP
 .B --correct-profile-only
-Only correct the profile
+Only correct the profile.
+.TP
+.B --profile-level=<profile-level>
+Use this profile if we need to rewrite the video stream\[cq]s H.264
+profile level, instead of the default, \[lq]4.1\[rq].
+.TP
+.B --force-profile-level, --no-force-profile-level
+Rewrite the video stream\[cq]s H.264 profile level, even if the existing
+profile is less than or equal to the new value.
+Or not.
 .TP
 .B --stop-before-extract-video
 Exit before extracting video from \f[C]<mkvfile>\f[R].

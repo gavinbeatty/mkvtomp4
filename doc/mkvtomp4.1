@@ -14,19 +14,21 @@ mkvtomp4.py - convert H.264 mkv files to mp4 files playable on the PS3
 .PP
 Uses existing tools to convert troublesome mkv files to mp4, that is
 playable on the PS3.
-The conversion does not re-encode the video, even if the H.264 profile
-is not supported by the PS3.
-If necessary, we rewrite the profile version number in the raw video
-stream.
+The conversion does not re-encode H.264 video.
+If the H.264 profile level is not supported by the PS3, we rewrite just
+some profile level information.
 The default value is 4.1, but it can be set with
-\f[C]--profile-level=5.0\f[R], etc.
-For audio, the conversion only re-encodes if it doesn\[cq]t use AAC
-codec (one can override this behaviour using \f[C]--audio-codec\f[R]).
-The resulting mp4 will be playable on the Sony PS3.
+\f[C]--profile-level=4.0\f[R], etc.
+The conversion only re-encodes audio if it doesn\[cq]t already use AAC.
+The resulting mp4 will be playable on the Sony PS3, and similar devices.
+Tested on profile levels 3.x and 4.x,
+.PP
+Note that the PS4 Media Player has better support for mkv than mp4
+(subtitles work only on mkv).
 .PP
 We depend on: \f[I]mkvtoolnix\f[R] and GPAC\[cq]s \f[I]MP4Box\f[R] for
 the conversion.
-\f[I]ffmpeg\f[R] is optional but required if doing audio transcoding and
+\f[I]ffmpeg\f[R] is only required if doing audio transcoding and
 subtitles.
 .SH OPTIONS
 .TP

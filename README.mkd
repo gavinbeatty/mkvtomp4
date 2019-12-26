@@ -2,14 +2,18 @@ mkvtomp4
 ========
 Gavin Beatty <public@gavinbeatty.com>
 
-Uses existing tools to convert troublesome mkv files to mp4.
-The conversion does not re-encode the video and only re-encodes the audio if
-it doesn't use AAC codec (one can override this behaviour using
-`--audio-codec`).
-The resulting mp4 will be playable on the Sony PS3.
+Uses existing tools to convert troublesome mkv files to mp4,
+that is playable on the PS3.
+The conversion does not re-encode H.264 video.
+If the H.264 profile level is not supported by the PS3,
+we rewrite just some profile level information.
+The default value is 4.1, but it can be set with `--profile-level=4.0`, etc.
+The conversion only re-encodes audio if it doesn't already use AAC.
+The resulting mp4 will be playable on the Sony PS3, and similar devices.
+Tested on profile levels 3.x and 4.x,
 
-We depend on: *mkvtoolnix* and GPAC's *MP4Box* for the conversion.
-*ffmpeg* is optional but required if doing audio transcoding.
+Note that the PS4 Media Player has better support for mkv than mp4
+(subtitles work only on mkv).
 
 Check the manual in `doc/mkvtomp4.1.txt`.
 

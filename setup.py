@@ -1,6 +1,9 @@
 import sys
 import subprocess as sp
-from distutils.core import setup
+if sys.version_info[0:2] < (2, 7):
+    from distutils.core import setup
+else:
+    from setuptools import setup
 from simplemkv.tomp4 import __doc__
 try:
     from simplemkv.version import __version__

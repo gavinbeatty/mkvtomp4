@@ -3,3 +3,4 @@ dist
 simplemkv/version.py
 *.pyc
 MANIFEST
+/*.egg-info/

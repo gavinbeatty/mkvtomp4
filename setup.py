@@ -69,7 +69,7 @@ def git_version():
     except OSError:
         sys.stderr.write('git diff-index failed\n')
     if stdout.strip('\n'):
-        ver = ver + '-dirty'
+        ver = ver + '+dirty'
         write_version(ver)
     return ver
 
@@ -105,7 +105,7 @@ codeopts = {
 }
 fullopts = codeopts.copy()
 fullopts['data_files'] = [
-    ('share/doc/mkvtomp4', ['README.mkd', 'LICENSE', 'doc/mkvtomp4.txt']),
+    ('share/doc/mkvtomp4', ['README.md', 'LICENSE', 'doc/mkvtomp4.txt']),
     ('share/man/man1', ['doc/mkvtomp4.1', 'doc/mkvtomp4.1.html']),
 ]
 

@@ -8,10 +8,12 @@
   <meta name="dcterms.date" content="2019-11-17" />
   <title>MKVTOMP4(1)</title>
   <style>
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
   </style>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
@@ -61,8 +63,8 @@
 <dt>--video-track=&lt;video_track&gt;</dt>
 <dd>Use <code>&lt;video_track&gt;</code> from the mkv file instead of trying to parse it.
 </dd>
-<dt>--hint, --no-hint</dt>
-<dd>Add info to the mp4 to make it easier to stream over the network.
+<dt>--fps=&lt;fps&gt;</dt>
+<dd>Use this value for frames-per-second.
 </dd>
 <dt>--audio-track=&lt;audio_track&gt;</dt>
 <dd>Use <code>&lt;audio_track&gt;</code> from the mkv file instead of trying to parse it.
@@ -85,14 +87,41 @@
 <dt>--subtitle-track=&lt;subtitle_track&gt;</dt>
 <dd>Use <code>&lt;subtitle_track&gt;</code> from the mkv file instead of trying to parse it.
 </dd>
+<dt>--subtitle-file=&lt;subtitle_file&gt;</dt>
+<dd>Use <code>&lt;subtitle_file&gt;</code> instead of trying to find one in the mkv.
+</dd>
 <dt>--subtitle-lang=&lt;language&gt;</dt>
 <dd>The 3-letter code for the language of the subtitle track. Only needs to be set if not already specified in the source.
 </dd>
 <dt>--subtitle-default, --subtitle-no-default</dt>
 <dd>Specify whether playback should use the subtitles by default.
 </dd>
+<dt>--title=&lt;title&gt;</dt>
+<dd>Use this value for the video title metadata.
+</dd>
+<dt>--show=&lt;show&gt;</dt>
+<dd>Use this value for the video show metadata (TV).
+</dd>
+<dt>--genre=&lt;genre&gt;</dt>
+<dd>Use this value for the video genre metadata.
+</dd>
+<dt>--year=&lt;year&gt;</dt>
+<dd>Use this value for the video year metadata.
+</dd>
+<dt>--director=&lt;director&gt;</dt>
+<dd>Use this value for the video director metadata (movie).
+</dd>
+<dt>--season=&lt;season&gt;</dt>
+<dd>Use this value for the video season number metadata (TV).
+</dd>
+<dt>--episode=&lt;episode&gt;</dt>
+<dd>Use this value for the video episode number metadata (TV).
+</dd>
 <dt>--correct-profile-only</dt>
-<dd>Only correct the profile.
+<dd>Only correct the mp4 profile.
+</dd>
+<dt>--print-profile-only</dt>
+<dd>Only print the mp4 profile.
 </dd>
 <dt>--profile-level=&lt;profile-level&gt;</dt>
 <dd>Use this profile if we need to rewrite the video stream’s H.264 profile level, instead of the default, “4.1”.

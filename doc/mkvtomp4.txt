@@ -2,26 +2,17 @@ MKVTOMP4(1)
 Gavin Beatty
 November 17, 2019
 
-
-
 NAME
-
 
 mkvtomp4.py - convert H.264 mkv files to mp4 files playable on the PS3
 
-
-
 SYNOPSIS
 
+mkvtomp4.py OPTIONS [--] <mkvfile>
 
-_mkvtomp4.py_ OPTIONS [--] <mkvfile>
-
-_mkvtomp4.py_ --correct-profile-only [--] <rawh264file>
-
-
+mkvtomp4.py --correct-profile-only [--] <rawh264file>
 
 DESCRIPTION
-
 
 Uses existing tools to convert troublesome mkv files to mp4, that is
 playable on the PS3. The conversion does not re-encode H.264 video. If
@@ -34,13 +25,10 @@ Sony PS3, and similar devices. Tested on profile levels 3.x and 4.x,
 Note that the PS4 Media Player has better support for mkv than mp4
 (subtitles work only on mkv).
 
-We depend on: _mkvtoolnix_ and GPAC’s _MP4Box_ for the conversion.
-_ffmpeg_ is only required if doing audio transcoding and subtitles.
-
-
+We depend on: mkvtoolnix and GPAC’s MP4Box for the conversion. ffmpeg is
+only required if doing audio transcoding and subtitles.
 
 OPTIONS
-
 
 -o, --output=<outfile>
     Put the completed mp4 into <outfile>.
@@ -70,8 +58,8 @@ OPTIONS
 --video-track=<video_track>
     Use <video_track> from the mkv file instead of trying to parse it.
 
---hint, --no-hint
-    Add info to the mp4 to make it easier to stream over the network.
+--fps=<fps>
+    Use this value for frames-per-second.
 
 --audio-track=<audio_track>
     Use <audio_track> from the mkv file instead of trying to parse it.
@@ -90,7 +78,7 @@ OPTIONS
 
 --audio-codec=<codec>
     If/When converting audio, convert to <codec>. Default is aac. This
-    should be something supported by _ffmpeg_.
+    should be something supported by ffmpeg.
 
 --audio-lang=<language>
     The 3-letter code for the language of the audio track. Only needs to
@@ -100,6 +88,9 @@ OPTIONS
     Use <subtitle_track> from the mkv file instead of trying to parse
     it.
 
+--subtitle-file=<subtitle_file>
+    Use <subtitle_file> instead of trying to find one in the mkv.
+
 --subtitle-lang=<language>
     The 3-letter code for the language of the subtitle track. Only needs
     to be set if not already specified in the source.
@@ -107,8 +98,32 @@ OPTIONS
 --subtitle-default, --subtitle-no-default
     Specify whether playback should use the subtitles by default.
 
+--title=<title>
+    Use this value for the video title metadata.
+
+--show=<show>
+    Use this value for the video show metadata (TV).
+
+--genre=<genre>
+    Use this value for the video genre metadata.
+
+--year=<year>
+    Use this value for the video year metadata.
+
+--director=<director>
+    Use this value for the video director metadata (movie).
+
+--season=<season>
+    Use this value for the video season number metadata (TV).
+
+--episode=<episode>
+    Use this value for the video episode number metadata (TV).
+
 --correct-profile-only
-    Only correct the profile.
+    Only correct the mp4 profile.
+
+--print-profile-only
+    Only print the mp4 profile.
 
 --profile-level=<profile-level>
     Use this profile if we need to rewrite the video stream’s H.264
@@ -147,31 +162,19 @@ OPTIONS
     The raw H.264 stream file that will have its profile corrected for
     use on the PS3.
 
-
-
 AUTHOR
-
 
 Gavin Beatty public@gavinbeatty.com
 
-
-
 RESOURCES
-
 
 Website: http://github.com/gavinbeatty/mkvtomp4/
 
-
-
 REPORTING BUGS
-
 
 Please report all bugs and wishes to public@gavinbeatty.com
 
-
-
 COPYING
-
 
 mkvtomp4 Copyright (c) 2012, 2013, 2019 Gavin Beatty,
 public@gavinbeatty.com

@@ -38,7 +38,7 @@ class Kwargs(object):
 
 
 def prin(*args, **kwargs):
-    fobj = kwargs.get('fobj', None)
+    fobj = kwargs.get('fobj')
     if fobj is None:
         fobj = sys.stdout
     sep = kwargs.get('sep', ' ')
@@ -95,7 +95,7 @@ def sq(args):
 
 def command(cmd, **kwargs):
     verbose_kwargs = {}
-    verbosity = kwargs.get('verbosity', None)
+    verbosity = kwargs.get('verbosity')
     if verbosity is not None:
         verbose_kwargs['verbosity'] = verbosity
     spopts = kwargs.get('spopts', {})
@@ -148,15 +148,24 @@ def default_options(argv0):
         's_default': False,
         's_lang': None,
         'output': None,
-        'hint': False,
         'video_track': None,
         'audio_track': None,
         'subtitles_track': None,
+        'subtitles_file': None,
+        'title': None,
+        'show': None,
+        'genre': None,
+        'year': None,
+        'director': None,
+        'season': None,
+        'episode': None,
         'keep_temp_files': False,
         'dry_run': False,
         'profile_level': '4.1',
         'force_profile_level': False,
         'correct_prof_only': False,
+        'print_prof_only': False,
+        'fps': None,
         'stop_v_ex': False,
         'stop_correct': False,
         'stop_a_ex': False,
@@ -171,22 +180,21 @@ def default_options(argv0):
 
 
 def mp4_add_cmd(mp4file, rawvideo, rawaudio, **opts):
-    a_delay = opts.get('a_delay', None)
+    a_delay = opts.get('a_delay')
     if a_delay is not None:
         a_delay = ':delay=' + a_delay
     else:
         a_delay = ''
-    a_lang = opts.get('a_lang', None)
+    a_lang = opts.get('a_lang')
     if a_lang is not None:
         a_lang = ':lang=' + a_lang
     else:
         a_lang = ''
-    hint = ['-hint'] if opts.get('hint', False) else []
     return [
         opts.get('mp4box', 'MP4Box'),
         '-add', rawvideo + '#video:fps=' + str(opts['fps']),
         '-add', rawaudio + '#audio:default' + a_delay + a_lang] + \
-        hint + ['-new', mp4file]
+        ['-new', mp4file]
 
 
 def ffmpeg_convert_audio_cmd(old, new, **opts):
@@ -202,7 +210,7 @@ def ffmpeg_convert_audio_cmd(old, new, **opts):
     else:
         cmd = [ffmpeg]
     return cmd + [
-        '-i', old, '-ac', str(channels), '-acodec', codec,
+        '-y', '-i', old, '-ac', str(channels), '-acodec', codec,
         '-ab', str(bitrate) + 'k', new
     ]
 
@@ -213,6 +221,18 @@ def pretend_correct_rawh264_profile(rawh264, **opts):
     if opts.get('force_profile_level', False):
         cmd.extend(['--force-profile-level'])
     prin(sq(cmd + [rawh264]))
+
+
+def read_rawh264_profile(rawh264, **opts):
+    f = open(rawh264, 'rb')
+    try:
+        f.seek(7)
+        existing_profile_bytes = f.read(1)
+        existing_profile = struct.unpack('b', existing_profile_bytes)[0]
+        existing_profile_str = str()
+        return existing_profile / 10.0
+    finally:
+        f.close()
 
 
 def correct_rawh264_profile(rawh264, **opts):
@@ -259,7 +279,7 @@ def mp4_extract_track_cmd(mp4, out, track, verbosely=False, mp4box=None):
 
 
 def real_main(mkvfile, **opts):
-    mkvinfo = opts.get('mkvinfo', None)
+    mkvinfo = opts.get('mkvinfo')
     infoopts = simplemkv.info.info_locale_opts('en_US')
     infoopts['mkvinfo'] = mkvinfo
     infostr = simplemkv.info.infostring(mkvfile, **infoopts)
@@ -271,7 +291,7 @@ def real_main(mkvfile, **opts):
         raise
 
     def get_track(typ, idx, codec_re, err=die):
-        number = opts.get(typ + '_track', None)
+        number = opts.get(typ + '_track')
         if number is not None and int(number) < 0:
             return
         if idx == 0 and number is not None:
@@ -301,6 +321,12 @@ def real_main(mkvfile, **opts):
     audiotrack = get_track('audio', 0, audiore, die)
     # audiotrack2 = get_track('audio', 1, audiore, nullprint)
     subtitlestrack = get_track('subtitles', 0, subtitlesre, eprint)
+    rawsub = opts.get('subtitles_file')
+    if subtitlestrack is None and rawsub is not None:
+        subtitlestrack = {'type': 'subtitles', 'codec': 'TEXT/UTF8', 'file': rawsub}
+        s_lang = opts.get('s_lang')
+        if s_lang is not None:
+            subtitlestrack['language'] = s_lang
     # subtitlestrack2 = get_track('subtitles', 1, subtitlesre, nullprint)
     tempfiles = []
     succeeded = False
@@ -317,7 +343,7 @@ def real_main(mkvfile, **opts):
         extract_cmd = mkv_extract_track_cmd(
             mkvfile, out=rawvideo, track=videotrack['number'],
             verbosely=(opts['verbosity'] > 0),
-            mkvextract=opts.get('mkvextract', None),
+            mkvextract=opts.get('mkvextract'),
         )
         tempfiles.append(rawvideo)
         dry_command(extract_cmd, **opts)
@@ -336,7 +362,7 @@ def real_main(mkvfile, **opts):
         extract_cmd = mkv_extract_track_cmd(
             mkvfile, out=rawaudio, track=audiotrack['number'],
             verbosely=(opts['verbosity'] > 0),
-            mkvextract=opts.get('mkvextract', None),
+            mkvextract=opts.get('mkvextract'),
         )
         tempfiles.append(rawaudio)
         dry_command(extract_cmd, **opts)
@@ -359,19 +385,27 @@ def real_main(mkvfile, **opts):
                 clean_s_codec = 'sup'
             else:
                 raise RuntimeError('Unknown extension for codec: ' + s_codec)
-            rawsub = os.path.splitext(mkvfile)[0] + '.' + clean_s_codec
-            extract_cmd = mkv_extract_track_cmd(
-                mkvfile, out=rawsub, track=subtitlestrack['number'],
-                verbosely=(opts['verbosity'] > 0),
-                mkvextract=opts.get('mkvextract', None),
-            )
-            dry_command(extract_cmd, **opts)
+            if rawsub is None:
+                rawsub = os.path.splitext(mkvfile)[0] + '.' + clean_s_codec
+                extract_cmd = mkv_extract_track_cmd(
+                    mkvfile, out=rawsub, track=subtitlestrack['number'],
+                    verbosely=(opts['verbosity'] > 0),
+                    mkvextract=opts.get('mkvextract'),
+                )
+                dry_command(extract_cmd, **opts)
         else:
             rawsub = None
+        hasmetadata = any(o in opts for o in ('title', 'show', 'genre', 'year', 'director', 'season', 'episode'))
         if opts['output'] is None:
             if rawsub is None:
-                nosuboutput = os.path.splitext(mkvfile)[0] + '.mp4'
-                suboutput = None
+                if hasmetadata:
+                    noexoutput = os.path.splitext(mkvfile)[0]
+                    nosuboutput = noexoutput + '.nometa.mp4'
+                    suboutput = noexoutput + '.mp4'
+                    tempfiles.append(nosuboutput)
+                else:
+                    nosuboutput = os.path.splitext(mkvfile)[0] + '.mp4'
+                    suboutput = None
             else:
                 noexoutput = os.path.splitext(mkvfile)[0]
                 nosuboutput = noexoutput + '.nosub.mp4'
@@ -379,16 +413,22 @@ def real_main(mkvfile, **opts):
                 tempfiles.append(nosuboutput)
         else:
             if rawsub is None:
-                nosuboutput = opts['output']
-                suboutput = None
+                if hasmetadata:
+                    nosuboutput = opts['output'] + '.nometa.mp4'
+                    suboutput = opts['output']
+                    tempfiles.append(nosuboutput)
+                else:
+                    nosuboutput = opts['output']
+                    suboutput = None
             else:
                 nosuboutput = opts['output'] + '.nosub.mp4'
                 suboutput = opts['output']
                 tempfiles.append(nosuboutput)
         exit_if(opts['stop_mp4'])
         # Create mp4 container
-        opts.setdefault('a_lang', audiotrack.get('language', None))
-        opts['fps'] = videotrack['fps']
+        opts.setdefault('a_lang', audiotrack.get('language'))
+        if opts['fps'] is None:
+            opts['fps'] = videotrack['fps']
         mp4add_cmd = mp4_add_cmd(
             nosuboutput, rawvideo, aacaudio,
             **opts
@@ -396,18 +436,73 @@ def real_main(mkvfile, **opts):
         dry_command(mp4add_cmd, **opts)
         if rawsub is not None:
             exit_if(opts['stop_s_add'])
-            s_lang = subtitlestrack.get('language', opts.get('s_lang', None))
+            metadata = []
+            s_lang = subtitlestrack.get('language')
+            if s_lang is None or s_lang == 'und':
+                s_lang = opts.get('s_lang')
             if s_lang is not None:
-                metadata = ['-metadata:s:s:0', 'language=' + s_lang]
-            else:
-                metadata = []
+                metadata.extend(['-metadata:s:s:0', 'language=' + s_lang])
+            a_lang = audiotrack.get('language')
+            if a_lang is None or a_lang == 'und':
+                a_lang = opts.get('a_lang')
+            if a_lang is not None:
+                metadata.extend(['-metadata:s:a:0', 'language=' + a_lang])
+            title = opts.get('title')
+            if title is not None:
+                metadata.extend(['-metadata', 'title=' + title])
+            show = opts.get('show')
+            if show is not None:
+                metadata.extend(['-metadata', 'show=' + show])
+            genre = opts.get('genre')
+            if genre is not None:
+                metadata.extend(['-metadata', 'genre=' + genre])
+            year = opts.get('year')
+            if year is not None:
+                metadata.extend(['-metadata', 'date=' + year])
+            director = opts.get('director')
+            if director is not None:
+                metadata.extend(['-metadata', 'artist=' + director])
+            season = opts.get('season')
+            if season is not None:
+                metadata.extend(['-metadata', 'season_number=' + season])
+            episode = opts.get('episode')
+            if episode is not None:
+                metadata.extend(['-metadata', 'episode_sort=' + episode])
             s_default = opts.get('s_default', False)
             disposition = ['-disposition:s:0', 'default' if s_default else '0']
             sub_cmd = [opts.get('ffmpeg', 'ffmpeg'),
-                '-i', nosuboutput, '-i', rawsub,
+                '-y', '-i', nosuboutput, '-i', rawsub,
                 '-c:v', 'copy', '-c:a', 'copy',
                 '-c:s', 'mov_text'] + metadata + disposition + [suboutput]
             dry_system(sub_cmd, **opts)
+        elif hasmetadata:
+            metadata = []
+            title = opts.get('title')
+            if title is not None:
+                metadata.extend(['-metadata', 'title=' + title])
+            show = opts.get('show')
+            if show is not None:
+                metadata.extend(['-metadata', 'show=' + show])
+            genre = opts.get('genre')
+            if genre is not None:
+                metadata.extend(['-metadata', 'genre=' + genre])
+            year = opts.get('year')
+            if year is not None:
+                metadata.extend(['-metadata', 'date=' + year])
+            director = opts.get('director')
+            if director is not None:
+                metadata.extend(['-metadata', 'artist=' + director])
+            season = opts.get('season')
+            if season is not None:
+                metadata.extend(['-metadata', 'season_number=' + season])
+            episode = opts.get('episode')
+            if episode is not None:
+                metadata.extend(['-metadata', 'episode_sort=' + episode])
+            meta_cmd = [opts.get('ffmpeg', 'ffmpeg'),
+                '-y', '-i', nosuboutput,
+                '-map_metadata', '0',
+                '-codec', 'copy'] + metadata + [suboutput]
+            dry_system(meta_cmd, **opts)
         # TODO: add subtitles with:
         # ffmpeg -i v.mp4 -i s.srt -c:v copy -c:a copy \
         #   -c:s mov_text -metadata:s:s:0 language=eng \
@@ -457,10 +552,10 @@ def usage(**kwargs):
     p('  Use this <mkvinfo> command.')
     p(' --mkvextract=<mkvextract>:')
     p('  Use this <mkvextract> command.')
-    p(' --hint, --no-hint:')
-    p('  Enable or disable hinting the mp4.')
     p(' --video-track=<video-track>:')
     p('  Use this video track number.')
+    p(' --fps=<fps>')
+    p('  Use this value for frames-per-second.')
     p(' --audio-track=<audio-track>:')
     p('  Use this audio track number.')
     p(' --audio-delay-ms=<audio-delay-ms>:')
@@ -475,10 +570,26 @@ def usage(**kwargs):
     p('  Describe the audio as this language in the mp4.')
     p(' --subtitle-track=<subtitle-track>:')
     p('  Use this subtitles track number.')
+    p(' --subtitle-file=<subtitle-file>:')
+    p('  Use this subtitles file.')
     p(' --subtitle-lang=<subtitle-lang>:')
     p('  Describe any subtitle track as this language in the mp4.')
     p(' --subtitle-default, --subtitle-no-default:')
     p('  Set any subtitle track as appearing by default, or not.')
+    p(' --title=<title>:')
+    p('  Set the title metadata.')
+    p(' --show=<show>:')
+    p('  Set the show metadata (TV).')
+    p(' --genre=<genre>:')
+    p('  Set the genre metadata.')
+    p(' --year=<year>:')
+    p('  Set the year metadata.')
+    p(' --director=<director>:')
+    p('  Set the director metadata (movie).')
+    p(' --season=<season>:')
+    p('  Set the season number metadata (TV).')
+    p(' --episode=<episode>:')
+    p('  Set the episode number metadata (TV).')
     p(' -o <output>|--output=<output>:')
     p('  Write the mp4 to this file.')
     p(' --keep-temp-files:')
@@ -487,6 +598,8 @@ def usage(**kwargs):
     p('  Don\'t actually run any commands.')
     p(' --correct-profile-only:')
     p('  Only correct the mp4 profile.')
+    p(' --print-profile-only:')
+    p('  Only print the mp4 profile.')
     p(' --profile-level=<profile-level>:')
     p('  Rewrite the H.264 profile level if it\'s higher than this.')
     p(' --force-profile-level, --no-force-profile-level:')
@@ -511,15 +624,17 @@ def parseopts(argv=None):
     lopts = [
         'help', 'usage', 'version', 'verbose',
         'mp4box=', 'ffmpeg=', 'mkvinfo=', 'mkvextract=',
-        'hint', 'no-hint',
         'video-track=', 'audio-track=',
         'audio-delay-ms=', 'audio-bitrate=', 'audio-channels=',
         'audio-codec=', 'audio-lang=',
-        'subtitle-track=', 'subtitle-lang=',
+        'subtitle-track=', 'subtitle-file=', 'subtitle-lang=',
         'subtitle-default', 'subtitle-no-default',
+        'title=', 'show=', 'genre=', 'year=', 'director=',
+        'season=', 'episode=',
         'output=', 'keep-temp-files', 'dry-run',
-        'correct-profile-only', 'profile-level=',
+        'correct-profile-only', 'profile-level=', 'print-profile-only',
         'force-profile-level', 'no-force-profile-level',
+        'fps=',
         'stop-before-extract-video', 'stop-before-correct-profile',
         'stop-before-extract-audio', 'stop-before-convert-audio',
         'stop-before-extract-sub',
@@ -552,10 +667,6 @@ def parseopts(argv=None):
             opts['mkvinfo'] = optarg
         elif opt == '--mkvextract':
             opts['mkvextract'] = optarg
-        elif opt == '--no-hint':
-            opts['hint'] = False
-        elif opt == '--hint':
-            opts['hint'] = True
         elif opt == '--video-track':
             opts['video_track'] = optarg
         elif opt == '--audio-track':
@@ -572,12 +683,28 @@ def parseopts(argv=None):
             opts['a_lang'] = optarg
         elif opt == '--subtitle-track':
             opts['subtitles_track'] = optarg
+        elif opt == '--subtitle-file':
+            opts['subtitles_file'] = optarg
         elif opt == '--subtitle-lang':
             opts['s_lang'] = optarg
         elif opt == '--subtitle-default':
             opts['s_default'] = True
         elif opt == '--subtitle-no-default':
             opts['s_default'] = False
+        elif opt == '--title':
+            opts['title'] = optarg
+        elif opt == '--show':
+            opts['show'] = optarg
+        elif opt == '--genre':
+            opts['genre'] = optarg
+        elif opt == '--year':
+            opts['year'] = optarg
+        elif opt == '--director':
+            opts['director'] = optarg
+        elif opt == '--season':
+            opts['season'] = optarg
+        elif opt == '--episode':
+            opts['episode'] = optarg
         elif opt in ('-o', '--output'):
             opts['output'] = optarg
         elif opt == '--keep-temp-files':
@@ -586,12 +713,16 @@ def parseopts(argv=None):
             opts['dry_run'] = True
         elif opt == '--correct-profile-only':
             opts['correct_prof_only'] = True
+        elif opt == '--print-profile-only':
+            opts['print_prof_only'] = True
         elif opt == '--profile-level':
             opts['profile_level'] = optarg
         elif opt == '--force-profile-level':
             opts['force_profile_level'] = True
         elif opt == '--no-force-profile-level':
             opts['force_profile_level'] = False
+        elif opt == '--fps':
+            opts['fps'] = float(optarg)
         elif opt == '--stop-before-extract-video':
             opts['stop_v_ex'] = True
         elif opt == '--stop-before-correct-profile':
@@ -617,7 +748,12 @@ def main(argv=None):
     opts, args = parseopts(argv)
     if len(args) != 1:
         die(simple_usage)
-    if opts['correct_prof_only']:
+    if opts['print_prof_only']:
+        profile = read_rawh264_profile(args[0], **opts)
+        if profile is None:
+            die('Failed to read h264 profile from', args[0])
+        prin(profile)
+    elif opts['correct_prof_only']:
         dry_correct_rawh264_profile(args[0], **opts)
     else:
         if opts['summary'] and not opts['dry_run']:

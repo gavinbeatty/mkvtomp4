@@ -63,8 +63,8 @@ We depend on: *mkvtoolnix* and GPAC's *MP4Box* for the conversion.
 \--video-track=\<video_track>
 :   Use `<video_track>` from the mkv file instead of trying to parse it.
 
-\--hint, \--no-hint
-:   Add info to the mp4 to make it easier to stream over the network.
+\--fps=\<fps>
+:   Use this value for frames-per-second.
 
 \--audio-track=\<audio_track>
 :   Use `<audio_track>` from the mkv file instead of trying to parse it.
@@ -91,6 +91,9 @@ We depend on: *mkvtoolnix* and GPAC's *MP4Box* for the conversion.
 \--subtitle-track=\<subtitle_track>
 :   Use `<subtitle_track>` from the mkv file instead of trying to parse it.
 
+\--subtitle-file=\<subtitle_file>
+:   Use `<subtitle_file>` instead of trying to find one in the mkv.
+
 \--subtitle-lang=\<language>
 :   The 3-letter code for the language of the subtitle track.
     Only needs to be set if not already specified in the source.
@@ -98,8 +101,32 @@ We depend on: *mkvtoolnix* and GPAC's *MP4Box* for the conversion.
 \--subtitle-default, \--subtitle-no-default
 :   Specify whether playback should use the subtitles by default.
 
+\--title=\<title>
+:   Use this value for the video title metadata.
+
+\--show=\<show>
+:   Use this value for the video show metadata (TV).
+
+\--genre=\<genre>
+:   Use this value for the video genre metadata.
+
+\--year=\<year>
+:   Use this value for the video year metadata.
+
+\--director=\<director>
+:   Use this value for the video director metadata (movie).
+
+\--season=\<season>
+:   Use this value for the video season number metadata (TV).
+
+\--episode=\<episode>
+:   Use this value for the video episode number metadata (TV).
+
 \--correct-profile-only
-:   Only correct the profile.
+:   Only correct the mp4 profile.
+
+\--print-profile-only
+:   Only print the mp4 profile.
 
 \--profile-level=\<profile-level>
 :   Use this profile if we need to rewrite the video stream's H.264 profile level,

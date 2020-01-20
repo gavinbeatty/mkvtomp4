@@ -52,6 +52,8 @@ def git_version():
         sys.stderr.write('git describe failed: leaving __version__ alone\n')
         return __version__
     ver = stdout.lstrip('mkvtomp4-v')
+    ver = ver.replace('-', '+', 1)
+    ver = ver.replace('-', '.')
     write_version(ver)
     try:
         proc = sp.Popen(['git', 'update-index', '-q', '--refresh'])
@@ -69,7 +71,7 @@ def git_version():
     except OSError:
         sys.stderr.write('git diff-index failed\n')
     if stdout.strip('\n'):
-        ver = ver + '+dirty'
+        ver = ver + '.dirty'
         write_version(ver)
     return ver
 

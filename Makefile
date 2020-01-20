@@ -10,6 +10,7 @@ RM = rm
 MKDIR = mkdir
 
 PROJECT = mkvtomp4
+SOURCES = LICENSE README.md mkvtomp4.py setup.py simplemkv/tomp4.py simplemkv/info.py simplemkv/__init__.py simplemkv/version.py
 PYZMAIN = simplemkv.tomp4:main
 PYDIST = dist
 PYZDIST = $(PYDIST)/pyz
@@ -45,7 +46,7 @@ clean-egg-info:
 clean: clean-doc clean-pyc clean-dist clean-build clean-egg-info
 .PHONY: clean
 
-$(PYDIST)/$(PROJECT).pyz:
+$(PYDIST)/$(PROJECT).pyz: $(SOURCES)
 	@$(RM) -rf $(PYZDIST)
 	$(PYTHON) -q setup.py sdist -d $(PYZDIST) --formats tar
 	@$(MKDIR) -p $(PYZDIST)/untar

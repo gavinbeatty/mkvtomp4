@@ -25,7 +25,7 @@ Tools:
 
 * *mkvtoolnix*
 * GPAC's *MP4Box*
-* *ffmpeg* (optional)
+* *ffmpeg* (optional, for audio encoding and subtitles)
 
 To install these tools:
 

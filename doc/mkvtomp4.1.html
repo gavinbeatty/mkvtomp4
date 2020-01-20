@@ -30,12 +30,19 @@
 <h1 id="synopsis">SYNOPSIS</h1>
 <p><em>mkvtomp4.py</em> <a href="#options">OPTIONS</a> [--] &lt;mkvfile&gt;</p>
 <p><em>mkvtomp4.py</em> --correct-profile-only [--] &lt;rawh264file&gt;</p>
+<p><em>mkvtomp4.py</em> --print-profile-only [--] &lt;rawh264file&gt;</p>
 <h1 id="description">DESCRIPTION</h1>
 <p>Uses existing tools to convert troublesome mkv files to mp4, that is playable on the PS3. The conversion does not re-encode H.264 video. If the H.264 profile level is not supported by the PS3, we rewrite just some profile level information. The default value is 4.1, but it can be set with <code>--profile-level=4.0</code>, etc. The conversion only re-encodes audio if it doesn’t already use AAC. The resulting mp4 will be playable on the Sony PS3, and similar devices. Tested on profile levels 3.x and 4.x,</p>
 <p>Note that the PS4 Media Player has better support for mkv than mp4 (subtitles work only on mkv).</p>
 <p>We depend on: <em>mkvtoolnix</em> and GPAC’s <em>MP4Box</em> for the conversion. <em>ffmpeg</em> is only required if doing audio transcoding and subtitles.</p>
 <h1 id="options">OPTIONS</h1>
 <dl>
+<dt>-h, --help</dt>
+<dd>Print a help message.
+</dd>
+<dt>--usage</dt>
+<dd>Print a short help message.
+</dd>
 <dt>-o, --output=&lt;outfile&gt;</dt>
 <dd>Put the completed mp4 into <code>&lt;outfile&gt;</code>.
 </dd>
@@ -61,37 +68,37 @@
 <dd>Use <code>&lt;mkvextract&gt;</code> as the mkvextract command.
 </dd>
 <dt>--video-track=&lt;video_track&gt;</dt>
-<dd>Use <code>&lt;video_track&gt;</code> from the mkv file instead of trying to parse it.
+<dd>Always use <code>&lt;video_track&gt;</code> from the mkv file.
 </dd>
 <dt>--fps=&lt;fps&gt;</dt>
-<dd>Use this value for frames-per-second.
+<dd>Always use this many frames-per-second.
 </dd>
 <dt>--audio-track=&lt;audio_track&gt;</dt>
-<dd>Use <code>&lt;audio_track&gt;</code> from the mkv file instead of trying to parse it.
+<dd>Always use <code>&lt;audio_track&gt;</code> from the mkv file.
 </dd>
 <dt>--audio-delay-ms=&lt;delay_ms&gt;</dt>
-<dd>When importing the audio track, delay by <code>&lt;delay_ms&gt;</code> milliseconds. e.g., <code>--audio-delay-ms</code>=<code>1000</code> delays by 1 second. Only supported by mp4box.
+<dd>Delay audio in mp4 by this many milliseconds.
 </dd>
-<dt>--audio-bitrate=&lt;bitrate&gt;</dt>
-<dd>If/When converting audio, use the given bitrate. e.g., <code>128</code>.
+<dt>--audio-bitrate=&lt;audio-bitrate-kbps&gt;</dt>
+<dd>Convert any audio using this bitrate. e.g., <code>128</code> meaning 128k.
 </dd>
 <dt>--audio-channels=&lt;channels&gt;</dt>
-<dd>If/When converting audio, use <code>&lt;channels&gt;</code> channels in the output. e.g., <code>5.1</code>.
+<dd>Convert any audio with <code>&lt;channels&gt;</code> channels in the output. e.g., <code>5.1</code>.
 </dd>
 <dt>--audio-codec=&lt;codec&gt;</dt>
-<dd>If/When converting audio, convert to <code>&lt;codec&gt;</code>. Default is <code>aac</code>. This should be something supported by <em>ffmpeg</em>.
+<dd>Convert any audio using this codec supported by <em>ffmpeg</em>.
 </dd>
 <dt>--audio-lang=&lt;language&gt;</dt>
-<dd>The 3-letter code for the language of the audio track. Only needs to be set if not already specified in the source.
+<dd>Always use this 3-letter language code for the audio track.
 </dd>
 <dt>--subtitle-track=&lt;subtitle_track&gt;</dt>
-<dd>Use <code>&lt;subtitle_track&gt;</code> from the mkv file instead of trying to parse it.
+<dd>Always use <code>&lt;subtitle_track&gt;</code> from the mkv file.
 </dd>
 <dt>--subtitle-file=&lt;subtitle_file&gt;</dt>
 <dd>Use <code>&lt;subtitle_file&gt;</code> instead of trying to find one in the mkv.
 </dd>
 <dt>--subtitle-lang=&lt;language&gt;</dt>
-<dd>The 3-letter code for the language of the subtitle track. Only needs to be set if not already specified in the source.
+<dd>Always use this 3-letter language code for the subtitle track.
 </dd>
 <dt>--subtitle-default, --subtitle-no-default</dt>
 <dd>Specify whether playback should use the subtitles by default.
@@ -124,10 +131,10 @@
 <dd>Only print the mp4 profile.
 </dd>
 <dt>--profile-level=&lt;profile-level&gt;</dt>
-<dd>Use this profile if we need to rewrite the video stream’s H.264 profile level, instead of the default, “4.1”.
+<dd>Any rewrite of H.264 profile will use this level. The default is “4.1”.
 </dd>
 <dt>--force-profile-level, --no-force-profile-level</dt>
-<dd>Rewrite the video stream’s H.264 profile level, even if the existing profile is less than or equal to the new value. Or not.
+<dd>Always rewrite the H.264 profile level, or not.
 </dd>
 <dt>--stop-before-extract-video</dt>
 <dd>Exit before extracting video from <code>&lt;mkvfile&gt;</code>.
@@ -139,7 +146,7 @@
 <dd>Exit before extracting audio from <code>&lt;mkvfile&gt;</code>.
 </dd>
 <dt>--stop-before-convert-audio</dt>
-<dd>Exit before converting audio previously extracted. This will stop even if the audio does not need to be converted.
+<dd>Exit before converting audio, even if the audio does not need to be converted.
 </dd>
 <dt>--stop-before-extract-sub</dt>
 <dd>Exit before extracting subtitles from <code>&lt;mkvfile&gt;</code>.
@@ -149,6 +156,9 @@
 </dd>
 <dt>--stop-before-add-sub</dt>
 <dd>Exit before adding subtitles to the mp4.
+</dd>
+<dt>--no-summary, --summary:</dt>
+<dd>Don’t provide a summary of commands, or do.
 </dd>
 <dt>&lt;mkvfile&gt;</dt>
 <dd>The Matroska (.mkv) file you wish to convert.

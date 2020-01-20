@@ -12,6 +12,8 @@ mkvtomp4.py OPTIONS [--] <mkvfile>
 
 mkvtomp4.py --correct-profile-only [--] <rawh264file>
 
+mkvtomp4.py --print-profile-only [--] <rawh264file>
+
 DESCRIPTION
 
 Uses existing tools to convert troublesome mkv files to mp4, that is
@@ -29,6 +31,12 @@ We depend on: mkvtoolnix and GPAC’s MP4Box for the conversion. ffmpeg is
 only required if doing audio transcoding and subtitles.
 
 OPTIONS
+
+-h, --help
+    Print a help message.
+
+--usage
+    Print a short help message.
 
 -o, --output=<outfile>
     Put the completed mp4 into <outfile>.
@@ -56,44 +64,37 @@ OPTIONS
     Use <mkvextract> as the mkvextract command.
 
 --video-track=<video_track>
-    Use <video_track> from the mkv file instead of trying to parse it.
+    Always use <video_track> from the mkv file.
 
 --fps=<fps>
-    Use this value for frames-per-second.
+    Always use this many frames-per-second.
 
 --audio-track=<audio_track>
-    Use <audio_track> from the mkv file instead of trying to parse it.
+    Always use <audio_track> from the mkv file.
 
 --audio-delay-ms=<delay_ms>
-    When importing the audio track, delay by <delay_ms> milliseconds.
-    e.g., --audio-delay-ms=1000 delays by 1 second. Only supported by
-    mp4box.
+    Delay audio in mp4 by this many milliseconds.
 
---audio-bitrate=<bitrate>
-    If/When converting audio, use the given bitrate. e.g., 128.
+--audio-bitrate=<audio-bitrate-kbps>
+    Convert any audio using this bitrate. e.g., 128 meaning 128k.
 
 --audio-channels=<channels>
-    If/When converting audio, use <channels> channels in the output.
-    e.g., 5.1.
+    Convert any audio with <channels> channels in the output. e.g., 5.1.
 
 --audio-codec=<codec>
-    If/When converting audio, convert to <codec>. Default is aac. This
-    should be something supported by ffmpeg.
+    Convert any audio using this codec supported by ffmpeg.
 
 --audio-lang=<language>
-    The 3-letter code for the language of the audio track. Only needs to
-    be set if not already specified in the source.
+    Always use this 3-letter language code for the audio track.
 
 --subtitle-track=<subtitle_track>
-    Use <subtitle_track> from the mkv file instead of trying to parse
-    it.
+    Always use <subtitle_track> from the mkv file.
 
 --subtitle-file=<subtitle_file>
     Use <subtitle_file> instead of trying to find one in the mkv.
 
 --subtitle-lang=<language>
-    The 3-letter code for the language of the subtitle track. Only needs
-    to be set if not already specified in the source.
+    Always use this 3-letter language code for the subtitle track.
 
 --subtitle-default, --subtitle-no-default
     Specify whether playback should use the subtitles by default.
@@ -126,12 +127,11 @@ OPTIONS
     Only print the mp4 profile.
 
 --profile-level=<profile-level>
-    Use this profile if we need to rewrite the video stream’s H.264
-    profile level, instead of the default, “4.1”.
+    Any rewrite of H.264 profile will use this level. The default is
+    “4.1”.
 
 --force-profile-level, --no-force-profile-level
-    Rewrite the video stream’s H.264 profile level, even if the existing
-    profile is less than or equal to the new value. Or not.
+    Always rewrite the H.264 profile level, or not.
 
 --stop-before-extract-video
     Exit before extracting video from <mkvfile>.
@@ -143,8 +143,8 @@ OPTIONS
     Exit before extracting audio from <mkvfile>.
 
 --stop-before-convert-audio
-    Exit before converting audio previously extracted. This will stop
-    even if the audio does not need to be converted.
+    Exit before converting audio, even if the audio does not need to be
+    converted.
 
 --stop-before-extract-sub
     Exit before extracting subtitles from <mkvfile>.
@@ -154,6 +154,9 @@ OPTIONS
 
 --stop-before-add-sub
     Exit before adding subtitles to the mp4.
+
+--no-summary, --summary:
+    Don’t provide a summary of commands, or do.
 
 <mkvfile>
     The Matroska (.mkv) file you wish to convert.

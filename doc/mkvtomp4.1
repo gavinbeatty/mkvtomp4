@@ -10,6 +10,8 @@ mkvtomp4.py - convert H.264 mkv files to mp4 files playable on the PS3
 \f[I]mkvtomp4.py\f[R] OPTIONS [--] <mkvfile>
 .PP
 \f[I]mkvtomp4.py\f[R] --correct-profile-only [--] <rawh264file>
+.PP
+\f[I]mkvtomp4.py\f[R] --print-profile-only [--] <rawh264file>
 .SH DESCRIPTION
 .PP
 Uses existing tools to convert troublesome mkv files to mp4, that is
@@ -31,6 +33,12 @@ the conversion.
 \f[I]ffmpeg\f[R] is only required if doing audio transcoding and
 subtitles.
 .SH OPTIONS
+.TP
+-h, --help
+Print a help message.
+.TP
+--usage
+Print a short help message.
 .TP
 -o, --output=<outfile>
 Put the completed mp4 into \f[C]<outfile>\f[R].
@@ -58,50 +66,39 @@ Use \f[C]<mkvinfo>\f[R] as the mkvinfo command.
 Use \f[C]<mkvextract>\f[R] as the mkvextract command.
 .TP
 --video-track=<video_track>
-Use \f[C]<video_track>\f[R] from the mkv file instead of trying to parse
-it.
+Always use \f[C]<video_track>\f[R] from the mkv file.
 .TP
 --fps=<fps>
-Use this value for frames-per-second.
+Always use this many frames-per-second.
 .TP
 --audio-track=<audio_track>
-Use \f[C]<audio_track>\f[R] from the mkv file instead of trying to parse
-it.
+Always use \f[C]<audio_track>\f[R] from the mkv file.
 .TP
 --audio-delay-ms=<delay_ms>
-When importing the audio track, delay by \f[C]<delay_ms>\f[R]
-milliseconds.
-e.g., \f[C]--audio-delay-ms\f[R]=\f[C]1000\f[R] delays by 1 second.
-Only supported by mp4box.
+Delay audio in mp4 by this many milliseconds.
 .TP
---audio-bitrate=<bitrate>
-If/When converting audio, use the given bitrate.
-e.g., \f[C]128\f[R].
+--audio-bitrate=<audio-bitrate-kbps>
+Convert any audio using this bitrate.
+e.g., \f[C]128\f[R] meaning 128k.
 .TP
 --audio-channels=<channels>
-If/When converting audio, use \f[C]<channels>\f[R] channels in the
-output.
+Convert any audio with \f[C]<channels>\f[R] channels in the output.
 e.g., \f[C]5.1\f[R].
 .TP
 --audio-codec=<codec>
-If/When converting audio, convert to \f[C]<codec>\f[R].
-Default is \f[C]aac\f[R].
-This should be something supported by \f[I]ffmpeg\f[R].
+Convert any audio using this codec supported by \f[I]ffmpeg\f[R].
 .TP
 --audio-lang=<language>
-The 3-letter code for the language of the audio track.
-Only needs to be set if not already specified in the source.
+Always use this 3-letter language code for the audio track.
 .TP
 --subtitle-track=<subtitle_track>
-Use \f[C]<subtitle_track>\f[R] from the mkv file instead of trying to
-parse it.
+Always use \f[C]<subtitle_track>\f[R] from the mkv file.
 .TP
 --subtitle-file=<subtitle_file>
 Use \f[C]<subtitle_file>\f[R] instead of trying to find one in the mkv.
 .TP
 --subtitle-lang=<language>
-The 3-letter code for the language of the subtitle track.
-Only needs to be set if not already specified in the source.
+Always use this 3-letter language code for the subtitle track.
 .TP
 --subtitle-default, --subtitle-no-default
 Specify whether playback should use the subtitles by default.
@@ -134,13 +131,11 @@ Only correct the mp4 profile.
 Only print the mp4 profile.
 .TP
 --profile-level=<profile-level>
-Use this profile if we need to rewrite the video stream\[cq]s H.264
-profile level, instead of the default, \[lq]4.1\[rq].
+Any rewrite of H.264 profile will use this level.
+The default is \[lq]4.1\[rq].
 .TP
 --force-profile-level, --no-force-profile-level
-Rewrite the video stream\[cq]s H.264 profile level, even if the existing
-profile is less than or equal to the new value.
-Or not.
+Always rewrite the H.264 profile level, or not.
 .TP
 --stop-before-extract-video
 Exit before extracting video from \f[C]<mkvfile>\f[R].
@@ -152,8 +147,8 @@ Exit before correcting profile of raw H.264 stream.
 Exit before extracting audio from \f[C]<mkvfile>\f[R].
 .TP
 --stop-before-convert-audio
-Exit before converting audio previously extracted.
-This will stop even if the audio does not need to be converted.
+Exit before converting audio, even if the audio does not need to be
+converted.
 .TP
 --stop-before-extract-sub
 Exit before extracting subtitles from \f[C]<mkvfile>\f[R].
@@ -163,6 +158,9 @@ Exit before adding audio and video to the mp4 container.
 .TP
 --stop-before-add-sub
 Exit before adding subtitles to the mp4.
+.TP
+--no-summary, --summary:
+Don\[cq]t provide a summary of commands, or do.
 .TP
 <mkvfile>
 The Matroska (.mkv) file you wish to convert.

@@ -18,6 +18,9 @@ PYZDIST = $(PYDIST)/pyz
 default: doc pyz
 .PHONY: default
 
+simplemkv/version.py:
+	$(PYTHON) -q setup.py check
+
 doc: doc/$(PROJECT).1 doc/$(PROJECT).1.html doc/$(PROJECT).txt
 .PHONY: doc
 

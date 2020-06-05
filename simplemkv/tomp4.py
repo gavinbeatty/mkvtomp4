@@ -8,6 +8,7 @@ except ImportError:
 
 import sys
 import os
+import errno
 import re
 import getopt
 import subprocess as sp
@@ -109,7 +110,9 @@ def command(cmd, **kwargs):
     except OSError:
         et, ev, tb = sys.exc_info()
         estr = ''.join(traceback.format_exception_only(et, ev))
-        die('command failed:', estr, ':', sq(cmd))
+        if ev.errno == errno.ENOENT:
+            die('command not found:', cmd[0] + ':', estr.rstrip('\n'))
+        die('command failed:', estr.rstrip('\n') + ':', sq(cmd))
     chout, cherr = proc.communicate()
     if chout is not str:
         chout = chout.decode('utf_8')
@@ -282,7 +285,14 @@ def real_main(mkvfile, **opts):
     mkvinfo = opts.get('mkvinfo')
     infoopts = simplemkv.info.info_locale_opts('en_US')
     infoopts['mkvinfo'] = mkvinfo
-    infostr = simplemkv.info.infostring(mkvfile, **infoopts)
+    try:
+        infostr = simplemkv.info.infostring(mkvfile, **infoopts)
+    except OSError:
+        et, ev, tb = sys.exc_info()
+        estr = ''.join(traceback.format_exception_only(et, ev))
+        if ev.errno == errno.ENOENT:
+            die('command not found:', mkvinfo + ':', estr.rstrip('\n'))
+        die('command failed:', estr.rstrip('\n') + ':', sq([mkvinfo, mkvfile]))
     info = simplemkv.info.infodict(infostr.split('\n'))
     try:
         tracks = info['tracks']
